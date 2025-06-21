@@ -3,30 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Repositories\Interfaces\AutorRepositoryInterface;
+use App\Services\LibroService;
+use App\Services\AutorService;
+use function view;
 
 class AutorController extends Controller
 {
-    protected $autorRepository;
+    protected $autorService;
 
-    public function __construct(AutorRepositoryInterface $autorRepository)
+    /**
+     * Inyecta el servicio de autores.
+     *
+     * @param AutorService $autorService
+     */
+    public function __construct(AutorService $autorService)
     {
-        $this->autorRepository = $autorRepository;
+        $this->autorService = $autorService;
     }
 
     /**
-     * Muestra la lista de autores.
-     * Entrada: ninguna
-     * Salida: vista con todos los autores
+     * Muestra todos los autores.
      */
     public function index()
     {
-        $autores = $this->autorRepository->all();
+        $autores = $this->autorService->getAll();
         return view('autores.index', compact('autores'));
     }
 
     /**
-     * Muestra el formulario para crear un autor.
+     * Muestra el formulario de creación de autor.
      */
     public function create()
     {
@@ -34,9 +39,7 @@ class AutorController extends Controller
     }
 
     /**
-     * Guarda un nuevo autor.
-     * Entrada: Request con nombre y apellido
-     * Salida: redirección a la lista
+     * Guarda un nuevo autor en la base de datos.
      */
     public function store(Request $request)
     {
@@ -45,26 +48,22 @@ class AutorController extends Controller
             'apellido' => 'required|string',
         ]);
 
-        $this->autorRepository->create($request->only('nombre', 'apellido'));
+        $this->autorService->create($request->only(['nombre', 'apellido']));
 
         return redirect()->route('autores.index');
     }
 
     /**
-     * Muestra el formulario para editar un autor.
-     * Entrada: ID del autor
-     * Salida: vista con datos del autor
+     * Muestra el formulario de edición para un autor.
      */
     public function edit($id)
     {
-        $autor = $this->autorRepository->find($id);
+        $autor = $this->autorService->find($id);
         return view('autores.edit', compact('autor'));
     }
 
     /**
      * Actualiza un autor existente.
-     * Entrada: Request y ID del autor
-     * Salida: redirección
      */
     public function update(Request $request, $id)
     {
@@ -73,19 +72,17 @@ class AutorController extends Controller
             'apellido' => 'required|string',
         ]);
 
-        $this->autorRepository->update($id, $request->only('nombre', 'apellido'));
+        $this->autorService->update($id, $request->only(['nombre', 'apellido']));
 
         return redirect()->route('autores.index');
     }
 
     /**
      * Elimina un autor.
-     * Entrada: ID del autor
-     * Salida: redirección
      */
     public function destroy($id)
     {
-        $this->autorRepository->delete($id);
+        $this->autorService->delete($id);
         return redirect()->route('autores.index');
     }
 }
