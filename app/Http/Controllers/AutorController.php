@@ -12,9 +12,9 @@ class AutorController extends Controller
     protected $autorService;
 
     /**
-     * Inyecta el servicio de autores.
-     *
-     * @param AutorService $autorService
+     * Inyecta el servicio de autores al controlador.
+     * Recibe una instancia de AutorService.
+     * No retorna ningún valor.
      */
     public function __construct(AutorService $autorService)
     {
@@ -22,7 +22,9 @@ class AutorController extends Controller
     }
 
     /**
-     * Muestra todos los autores.
+     * Muestra todos los autores disponibles.
+     * No recibe parámetros.
+     * Retorna la vista con la lista de autores.
      */
     public function index()
     {
@@ -31,7 +33,9 @@ class AutorController extends Controller
     }
 
     /**
-     * Muestra el formulario de creación de autor.
+     * Muestra el formulario para crear un nuevo autor.
+     * No recibe parámetros.
+     * Retorna la vista del formulario de creación.
      */
     public function create()
     {
@@ -40,6 +44,8 @@ class AutorController extends Controller
 
     /**
      * Guarda un nuevo autor en la base de datos.
+     * Recibe un Request con los campos 'nombre' y 'apellido'.
+     * Redirige a la ruta de la lista de autores.
      */
     public function store(Request $request)
     {
@@ -54,7 +60,9 @@ class AutorController extends Controller
     }
 
     /**
-     * Muestra el formulario de edición para un autor.
+     * Muestra el formulario para editar un autor existente.
+     * Recibe el ID del autor como parámetro.
+     * Retorna la vista con los datos del autor a editar.
      */
     public function edit($id)
     {
@@ -63,7 +71,9 @@ class AutorController extends Controller
     }
 
     /**
-     * Actualiza un autor existente.
+     * Actualiza los datos de un autor específico.
+     * Recibe un Request con los nuevos datos y el ID del autor.
+     * Redirige a la ruta de la lista de autores.
      */
     public function update(Request $request, $id)
     {
@@ -78,7 +88,9 @@ class AutorController extends Controller
     }
 
     /**
-     * Elimina un autor.
+     * Elimina un autor de la base de datos.
+     * Recibe el ID del autor como parámetro.
+     * Redirige a la ruta de la lista de autores.
      */
     public function destroy($id)
     {

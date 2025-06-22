@@ -11,6 +11,11 @@ class LibroController extends Controller
     protected $libroRepository;
     protected $autorRepository;
 
+    /**
+     * Inyecta los repositorios de libros y autores al controlador.
+     * Recibe instancias de LibroRepositoryInterface y AutorRepositoryInterface.
+     * No retorna ningún valor.
+     */
     public function __construct(
         LibroRepositoryInterface $libroRepository,
         AutorRepositoryInterface $autorRepository
@@ -21,8 +26,8 @@ class LibroController extends Controller
 
     /**
      * Muestra todos los libros existentes.
-     * Entrada: ninguna.
-     * Salida: vista con la lista de libros y sus autores.
+     * No recibe parámetros.
+     * Retorna la vista con la lista de libros y sus autores.
      */
     public function index()
     {
@@ -32,8 +37,8 @@ class LibroController extends Controller
 
     /**
      * Muestra el formulario para crear un nuevo libro.
-     * Entrada: ninguna.
-     * Salida: vista con la lista de autores para asociar al libro.
+     * No recibe parámetros.
+     * Retorna la vista con la lista de autores disponibles.
      */
     public function create()
     {
@@ -43,8 +48,8 @@ class LibroController extends Controller
 
     /**
      * Guarda un nuevo libro en la base de datos.
-     * Entrada: Request con título, género y autor_id.
-     * Salida: redirección a la vista de índice de libros.
+     * Recibe un Request con los campos: titulo, genero y autor_id.
+     * Redirige a la vista del índice de libros.
      */
     public function store(Request $request)
     {
@@ -61,8 +66,8 @@ class LibroController extends Controller
 
     /**
      * Muestra el formulario para editar un libro existente.
-     * Entrada: ID del libro.
-     * Salida: vista con los datos del libro y la lista de autores.
+     * Recibe el ID del libro como parámetro.
+     * Retorna la vista con los datos del libro y la lista de autores.
      */
     public function edit($id)
     {
@@ -74,8 +79,8 @@ class LibroController extends Controller
 
     /**
      * Actualiza los datos de un libro existente.
-     * Entrada: Request con título, género, autor_id; y el ID del libro.
-     * Salida: redirección a la vista de índice de libros.
+     * Recibe un Request con los campos actualizados y el ID del libro.
+     * Redirige a la vista del índice de libros.
      */
     public function update(Request $request, $id)
     {
@@ -91,9 +96,9 @@ class LibroController extends Controller
     }
 
     /**
-     * Elimina un libro por su ID.
-     * Entrada: ID del libro.
-     * Salida: redirección a la vista de índice de libros.
+     * Elimina un libro de la base de datos.
+     * Recibe el ID del libro como parámetro.
+     * Redirige a la vista del índice de libros.
      */
     public function destroy($id)
     {
