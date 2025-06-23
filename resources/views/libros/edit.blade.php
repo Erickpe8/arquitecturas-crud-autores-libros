@@ -30,9 +30,15 @@
             <input type="text" name="titulo" id="titulo" value="{{ old('titulo', $libro->titulo) }}" required>
         </div>
 
-        <div>
-            <label for="genero">Género:</label>
-            <input type="text" name="genero" id="genero" value="{{ old('genero', $libro->genero) }}" required>
+        <div class="mb-3">
+            <label for="genero" class="form-label">Género</label>
+            <select name="genero" id="genero" class="form-select" required>
+                <option value="">Selecciona un género</option>
+                <option value="Novela" {{ old('genero', $libro->genero ?? '') == 'Novela' ? 'selected' : '' }}>Novela</option>
+                <option value="Poesía" {{ old('genero', $libro->genero ?? '') == 'Poesía' ? 'selected' : '' }}>Poesía</option>
+                <option value="Drama" {{ old('genero', $libro->genero ?? '') == 'Drama' ? 'selected' : '' }}>Drama</option>
+                <option value="Ensayo" {{ old('genero', $libro->genero ?? '') == 'Ensayo' ? 'selected' : '' }}>Ensayo</option>
+            </select>
         </div>
 
         <div>
