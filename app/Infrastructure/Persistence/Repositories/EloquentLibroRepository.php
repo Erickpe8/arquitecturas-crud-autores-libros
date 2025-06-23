@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Repositories\Eloquent;
+namespace App\Infrastructure\Persistence\Repositories;
 
-use App\Models\Libro;
-use App\Repositories\Interfaces\LibroRepositoryInterface;
+use App\Domain\Libro\Models\Libro;
+use App\Domain\Libro\Repositories\LibroRepositoryInterface;
 
-class LibroRepository implements LibroRepositoryInterface
+class EloquentLibroRepository implements LibroRepositoryInterface
 {
     public function all()
     {

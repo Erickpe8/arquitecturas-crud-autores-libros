@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AutorController;
-use App\Http\Controllers\LibroController;  
+use App\Interfaces\Web\Controllers\LibroController;
+use App\Interfaces\Web\Controllers\AutorController;
 
 
 Route::get('/', function () {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Interfaces\Web\Controllers;
 
 use Illuminate\Http\Request;
-use App\Repositories\Interfaces\LibroRepositoryInterface;
-use App\Repositories\Interfaces\AutorRepositoryInterface;
+use App\Domain\Libro\Repositories\LibroRepositoryInterface;
+use App\Domain\Autor\Repositories\AutorRepositoryInterface; 
 
 class LibroController extends Controller
 {

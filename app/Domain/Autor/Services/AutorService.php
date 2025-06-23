@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\AutorRepositoryInterface;
+use App\Domain\Autor\Repositories\AutorRepositoryInterface;
 
 class AutorService
 {
@@ -10,8 +10,8 @@ class AutorService
 
     /**
      * Inyecta el repositorio de autores.
-     *
-     * @param AutorRepositoryInterface $autorRepository
+     * Entrada: una instancia de AutorRepositoryInterface.
+     * Salida: no retorna valor.
      */
     public function __construct(AutorRepositoryInterface $autorRepository)
     {
@@ -19,9 +19,9 @@ class AutorService
     }
 
     /**
-     * Retorna todos los autores.
-     *
-     * @return mixed
+     * Obtiene todos los autores registrados.
+     * Entrada: ninguna.
+     * Salida: colección o lista de autores.
      */
     public function getAll()
     {
@@ -29,10 +29,9 @@ class AutorService
     }
 
     /**
-     * Crea un nuevo autor con los datos dados.
-     *
-     * @param array $data
-     * @return \App\Models\Autor
+     * Crea un nuevo autor.
+     * Entrada: array con datos como nombre y apellido.
+     * Salida: autor creado.
      */
     public function create(array $data)
     {
@@ -40,10 +39,9 @@ class AutorService
     }
 
     /**
-     * Retorna un autor por su ID.
-     *
-     * @param int $id
-     * @return \App\Models\Autor|null
+     * Busca un autor por su ID.
+     * Entrada: ID numérico del autor.
+     * Salida: autor encontrado o error si no existe.
      */
     public function find($id)
     {
@@ -51,11 +49,9 @@ class AutorService
     }
 
     /**
-     * Actualiza un autor con nuevos datos.
-     *
-     * @param int $id
-     * @param array $data
-     * @return bool
+     * Actualiza los datos de un autor existente.
+     * Entrada: ID del autor y array con los nuevos datos.
+     * Salida: autor actualizado o resultado del intento.
      */
     public function update($id, array $data)
     {
@@ -63,10 +59,9 @@ class AutorService
     }
 
     /**
-     * Elimina un autor por su ID.
-     *
-     * @param int $id
-     * @return bool
+     * Elimina un autor.
+     * Entrada: ID del autor a eliminar.
+     * Salida: true si se eliminó, false si falló.
      */
     public function delete($id)
     {

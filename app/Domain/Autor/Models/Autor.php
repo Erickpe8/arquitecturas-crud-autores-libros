@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Domain\Autor\Models;
 
+use App\Domain\Libro\Models\Libro;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,6 @@ class Autor extends Model
     
     public function libros()
     {
-        return $this->hasMany(\App\Models\Libro::class);
+        return $this->hasMany(Libro::class);
     }
 }

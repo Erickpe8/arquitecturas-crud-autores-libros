@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Domain\Libro\Services;
 
-use App\Repositories\Interfaces\LibroRepositoryInterface;
+use App\Domain\Libro\Repositories\LibroRepositoryInterface;
 
 class LibroService
 {
@@ -10,8 +10,8 @@ class LibroService
 
     /**
      * Inyecta el repositorio de libros.
-     *
-     * @param LibroRepositoryInterface $libroRepository
+     * Entrada: una instancia de LibroRepositoryInterface.
+     * Salida: no retorna valor.
      */
     public function __construct(LibroRepositoryInterface $libroRepository)
     {
@@ -19,9 +19,9 @@ class LibroService
     }
 
     /**
-     * Retorna todos los libros.
-     *
-     * @return mixed
+     * Obtiene todos los libros registrados.
+     * Entrada: ninguna.
+     * Salida: colección o lista de libros.
      */
     public function getAll()
     {
@@ -29,10 +29,9 @@ class LibroService
     }
 
     /**
-     * Crea un nuevo libro con los datos dados.
-     *
-     * @param array $data
-     * @return \App\Models\Libro
+     * Crea un nuevo libro.
+     * Entrada: array con datos como título, género y autor_id.
+     * Salida: libro creado.
      */
     public function create(array $data)
     {
@@ -40,10 +39,9 @@ class LibroService
     }
 
     /**
-     * Retorna un libro por su ID.
-     *
-     * @param int $id
-     * @return \App\Models\Libro|null
+     * Busca un libro por su ID.
+     * Entrada: ID numérico del libro.
+     * Salida: libro encontrado o error si no existe.
      */
     public function find($id)
     {
@@ -51,11 +49,9 @@ class LibroService
     }
 
     /**
-     * Actualiza un libro con nuevos datos.
-     *
-     * @param int $id
-     * @param array $data
-     * @return bool
+     * Actualiza los datos de un libro existente.
+     * Entrada: ID del libro y array con los nuevos datos.
+     * Salida: libro actualizado o resultado del intento.
      */
     public function update($id, array $data)
     {
@@ -63,10 +59,9 @@ class LibroService
     }
 
     /**
-     * Elimina un libro por su ID.
-     *
-     * @param int $id
-     * @return bool
+     * Elimina un libro.
+     * Entrada: ID del libro a eliminar.
+     * Salida: true si se eliminó, false si falló.
      */
     public function delete($id)
     {

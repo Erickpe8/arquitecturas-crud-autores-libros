@@ -1,7 +1,7 @@
 <?php
 
-namespace App\Models;
-
+namespace App\Domain\Libro\Models;
+use App\Domain\Autor\Models\Autor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
