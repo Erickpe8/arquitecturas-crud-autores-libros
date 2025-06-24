@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application\Libro\UseCases;
+namespace App\Application\Libro\Commands;
 
 use App\Domain\Contracts\LibroRepositoryInterface;
 

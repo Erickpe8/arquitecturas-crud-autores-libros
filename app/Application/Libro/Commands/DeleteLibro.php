@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Application\Libro\UseCases;
+namespace App\Application\Libro\Commands;
 
 use App\Domain\Contracts\LibroRepositoryInterface;
 
-class UpdateLibro
+class DeleteLibro
 {
     protected LibroRepositoryInterface $libroRepository;
 
@@ -13,8 +13,8 @@ class UpdateLibro
         $this->libroRepository = $libroRepository;
     }
 
-    public function execute(int $id, array $data)
+    public function execute(int $id)
     {
-        return $this->libroRepository->update($id, $data);
+        return $this->libroRepository->delete($id);
     }
 }

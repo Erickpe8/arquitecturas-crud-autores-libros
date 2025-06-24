@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Application\Libro\UseCases;
+namespace App\Application\Libro\Queries;
 
 use App\Domain\Contracts\LibroRepositoryInterface;
-
-class FindLibro
+class ListLibros
 {
     protected LibroRepositoryInterface $libroRepository;
 
@@ -13,8 +12,8 @@ class FindLibro
         $this->libroRepository = $libroRepository;
     }
 
-    public function execute(int $id)
+    public function execute()
     {
-        return $this->libroRepository->find($id);
+        return $this->libroRepository->all();
     }
 }

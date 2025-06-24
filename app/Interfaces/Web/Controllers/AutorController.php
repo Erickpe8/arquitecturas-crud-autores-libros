@@ -3,11 +3,11 @@
 namespace App\Interfaces\Web\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Autor\UseCases\ListAutores;
-use App\Application\Autor\UseCases\CreateAutor;
-use App\Application\Autor\UseCases\FindAutor;
-use App\Application\Autor\UseCases\UpdateAutor;
-use App\Application\Autor\UseCases\DeleteAutor;
+use App\Application\Autor\Commands\CreateAutor;
+use App\Application\Autor\Commands\DeleteAutor;
+use App\Application\Autor\Commands\UpdateAutor;
+use App\Application\Autor\Queries\ListAutor;
+use App\Application\Autor\Queries\FindAutor;
 use function view;
 
 class AutorController extends Controller
@@ -17,7 +17,7 @@ class AutorController extends Controller
      * Entrada: caso de uso ListAutores.
      * Salida: vista con la lista de autores.
      */
-    public function index(ListAutores $useCase)
+    public function index(ListAutor $useCase)
     {
         $autores = $useCase->execute();
         return view('autores.index', compact('autores'));

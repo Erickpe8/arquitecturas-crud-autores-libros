@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Application\Libro\UseCases;
+namespace App\Application\Libro\Queries;
 
 use App\Domain\Contracts\LibroRepositoryInterface;
 
-class DeleteLibro
+class FindLibro
 {
     protected LibroRepositoryInterface $libroRepository;
 
@@ -15,6 +15,6 @@ class DeleteLibro
 
     public function execute(int $id)
     {
-        return $this->libroRepository->delete($id);
+        return $this->libroRepository->find($id);
     }
 }

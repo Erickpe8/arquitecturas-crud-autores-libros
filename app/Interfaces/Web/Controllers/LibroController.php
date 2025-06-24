@@ -3,13 +3,12 @@
 namespace App\Interfaces\Web\Controllers;
 
 use Illuminate\Http\Request;
-use App\Application\Libro\UseCases\ListLibros;
-use App\Application\Libro\UseCases\CreateLibro;
-use App\Application\Libro\UseCases\FindLibro;
-use App\Application\Libro\UseCases\UpdateLibro;
-use App\Application\Libro\UseCases\DeleteLibro;
-
-use App\Application\Autor\UseCases\ListAutores;
+use App\Application\Libro\Commands\CreateLibro;
+use App\Application\Libro\Commands\UpdateLibro;
+use App\Application\Libro\Commands\DeleteLibro;
+use App\Application\Libro\Queries\ListLibros;
+use App\Application\Libro\Queries\FindLibro;
+use App\Application\Autor\Queries\ListAutor;
 
 use function view;
 
@@ -31,7 +30,7 @@ class LibroController extends Controller
      * Entrada: caso de uso ListAutores.
      * Salida: vista con formulario de creación y lista de autores.
      */
-    public function create(ListAutores $useCase)
+    public function create(ListAutor $useCase)
     {
         $autores = $useCase->execute();
         return view('libros.create', compact('autores'));
@@ -60,7 +59,7 @@ class LibroController extends Controller
      * Entrada: ID del libro, caso de uso FindLibro y ListAutores.
      * Salida: vista con los datos del libro y los autores disponibles.
      */
-    public function edit($id, FindLibro $findLibro, ListAutores $listAutores)
+    public function edit($id, FindLibro $findLibro, ListAutor $listAutores)
     {
         $libro = $findLibro->execute($id);
         $autores = $listAutores->execute();
