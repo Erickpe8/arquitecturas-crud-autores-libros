@@ -23,7 +23,7 @@ A continuación se listan las arquitecturas aplicadas, con una breve descripció
 4. **[Domain-Driven Design (DDD)](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/domain-driven-design)**  
    Divide la aplicación en dominios específicos del negocio. Organiza las entidades, servicios, repositorios e interfaces bajo un mismo contexto.
 
-5. **[Hexagonal Architecture (Ports and Adapters)](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/hexagonal)**  
+5. **[Hexagonal Architecture (Ports and Adapters)](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/hexagonal-architecture)**  
    Estructura el sistema alrededor de casos de uso. Separa la lógica interna de las dependencias externas mediante puertos y adaptadores.
 
 6. **[CQRS (Command Query Responsibility Segregation)](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/CQRS-(command-query-responsibility-segregation))**  
