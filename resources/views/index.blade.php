@@ -47,7 +47,7 @@
 </head>
 <body>
     <div class="contenedor">
-        <h1>Crud con arquitectura DDD</h1>
+        <h1>Crud con arquitectura Hexagonal</h1>
         <h1>Bienvenido</h1>
         <p>Selecciona el módulo al que deseas entrar:</p>
         <a href="{{ route('autores.index') }}">CRUD de Autores</a>

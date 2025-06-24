@@ -2,8 +2,7 @@
 
 namespace App\Application\Libro\UseCases;
 
-use App\Domain\Libro\Repositories\LibroRepositoryInterface;
-
+use App\Domain\Libro\Ports\LibroRepositoryInterface;
 class ListLibros
 {
     protected LibroRepositoryInterface $libroRepository;

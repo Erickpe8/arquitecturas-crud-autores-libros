@@ -5,12 +5,12 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 // Repositorio de autores
-use App\Domain\Autor\Repositories\AutorRepositoryInterface;
-use App\Infrastructure\Persistence\Repositories\EloquentAutorRepository;
+use App\Domain\Autor\Ports\AutorRepositoryInterface;
+use App\Infrastructure\Adapters\Persistence\EloquentAutorRepository;
 
 // Repositorio de libros
-use App\Domain\Libro\Repositories\LibroRepositoryInterface;
-use App\Infrastructure\Persistence\Repositories\EloquentLibroRepository;
+use App\Domain\Libro\Ports\LibroRepositoryInterface;
+use App\Infrastructure\Adapters\Persistence\EloquentLibroRepository;
 
 class AppServiceProvider extends ServiceProvider
 {

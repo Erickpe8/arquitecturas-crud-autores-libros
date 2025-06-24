@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Libro\Repositories;
+namespace App\Domain\Libro\Ports;
 
 interface LibroRepositoryInterface
 {

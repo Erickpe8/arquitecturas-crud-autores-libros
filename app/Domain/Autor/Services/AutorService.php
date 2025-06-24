@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use App\Domain\Autor\Repositories\AutorRepositoryInterface;
+use App\Domain\Autor\Ports\AutorRepositoryInterface;
+
+
 
 class AutorService
 {

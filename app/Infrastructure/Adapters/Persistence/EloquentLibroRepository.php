@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Infrastructure\Persistence\Repositories;
+namespace App\Infrastructure\Adapters\Persistence;
 
-use App\Domain\Libro\Models\Libro;
-use App\Domain\Libro\Repositories\LibroRepositoryInterface;
+use App\Domain\Libro\Entities\Libro;
+use App\Domain\Libro\ports\LibroRepositoryInterface;
 
 class EloquentLibroRepository implements LibroRepositoryInterface
 {

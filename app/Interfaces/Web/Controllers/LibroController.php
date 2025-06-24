@@ -3,106 +3,96 @@
 namespace App\Interfaces\Web\Controllers;
 
 use Illuminate\Http\Request;
-use App\Domain\Libro\Repositories\LibroRepositoryInterface;
-use App\Domain\Autor\Repositories\AutorRepositoryInterface; 
+use App\Application\Libro\UseCases\ListLibros;
+use App\Application\Libro\UseCases\CreateLibro;
+use App\Application\Libro\UseCases\FindLibro;
+use App\Application\Libro\UseCases\UpdateLibro;
+use App\Application\Libro\UseCases\DeleteLibro;
+
+use App\Application\Autor\UseCases\ListAutores;
+
+use function view;
 
 class LibroController extends Controller
 {
-    protected $libroRepository;
-    protected $autorRepository;
-
-    /**
-     * Inyecta los repositorios de libros y autores al controlador.
-     * Recibe instancias de LibroRepositoryInterface y AutorRepositoryInterface.
-     * No retorna ningún valor.
-     */
-    public function __construct(
-        LibroRepositoryInterface $libroRepository,
-        AutorRepositoryInterface $autorRepository
-    ) {
-        $this->libroRepository = $libroRepository;
-        $this->autorRepository = $autorRepository;
-    }
-
     /**
      * Muestra todos los libros existentes.
-     * No recibe parámetros.
-     * Retorna la vista con la lista de libros y sus autores.
+     * Entrada: caso de uso ListLibros.
+     * Salida: vista con la lista de libros.
      */
-    public function index()
+    public function index(ListLibros $useCase)
     {
-        $libros = $this->libroRepository->all();
+        $libros = $useCase->execute();
         return view('libros.index', compact('libros'));
     }
 
     /**
      * Muestra el formulario para crear un nuevo libro.
-     * No recibe parámetros.
-     * Retorna la vista con la lista de autores disponibles.
+     * Entrada: caso de uso ListAutores.
+     * Salida: vista con formulario de creación y lista de autores.
      */
-    public function create()
+    public function create(ListAutores $useCase)
     {
-        $autores = $this->autorRepository->all();
+        $autores = $useCase->execute();
         return view('libros.create', compact('autores'));
     }
 
     /**
-     * Guarda un nuevo libro en la base de datos.
-     * Recibe un Request con los campos: titulo, genero y autor_id.
-     * Redirige a la vista del índice de libros.
+     * Guarda un nuevo libro.
+     * Entrada: Request con título, género y autor_id; caso de uso CreateLibro.
+     * Salida: redirección a lista de libros.
      */
-    public function store(Request $request)
+    public function store(Request $request, CreateLibro $useCase)
     {
         $request->validate([
-            'titulo' => 'required|string',
-            'genero' => 'required|string',
+            'titulo' => 'required|string|max:255',
+            'genero' => 'required|string|max:100',
             'autor_id' => 'required|exists:autors,id',
         ]);
 
-        $this->libroRepository->create($request->only('titulo', 'genero', 'autor_id'));
+        $useCase->execute($request->only(['titulo', 'genero', 'autor_id']));
 
         return redirect()->route('libros.index');
     }
 
     /**
-     * Muestra el formulario para editar un libro existente.
-     * Recibe el ID del libro como parámetro.
-     * Retorna la vista con los datos del libro y la lista de autores.
+     * Muestra el formulario de edición.
+     * Entrada: ID del libro, caso de uso FindLibro y ListAutores.
+     * Salida: vista con los datos del libro y los autores disponibles.
      */
-    public function edit($id)
+    public function edit($id, FindLibro $findLibro, ListAutores $listAutores)
     {
-        $libro = $this->libroRepository->find($id);
-        $autores = $this->autorRepository->all();
-
+        $libro = $findLibro->execute($id);
+        $autores = $listAutores->execute();
         return view('libros.edit', compact('libro', 'autores'));
     }
 
     /**
-     * Actualiza los datos de un libro existente.
-     * Recibe un Request con los campos actualizados y el ID del libro.
-     * Redirige a la vista del índice de libros.
+     * Actualiza un libro existente.
+     * Entrada: Request con datos actualizados, ID y caso de uso UpdateLibro.
+     * Salida: redirección a lista de libros.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, UpdateLibro $useCase)
     {
         $request->validate([
-            'titulo' => 'required|string',
-            'genero' => 'required|string',
+            'titulo' => 'required|string|max:255',
+            'genero' => 'required|string|max:100',
             'autor_id' => 'required|exists:autors,id',
         ]);
 
-        $this->libroRepository->update($id, $request->only('titulo', 'genero', 'autor_id'));
+        $useCase->execute($id, $request->only(['titulo', 'genero', 'autor_id']));
 
         return redirect()->route('libros.index');
     }
 
     /**
-     * Elimina un libro de la base de datos.
-     * Recibe el ID del libro como parámetro.
-     * Redirige a la vista del índice de libros.
+     * Elimina un libro.
+     * Entrada: ID del libro y caso de uso DeleteLibro.
+     * Salida: redirección a lista de libros.
      */
-    public function destroy($id)
+    public function destroy($id, DeleteLibro $useCase)
     {
-        $this->libroRepository->delete($id);
+        $useCase->execute($id);
         return redirect()->route('libros.index');
     }
 }

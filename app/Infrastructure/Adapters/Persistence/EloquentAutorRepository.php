@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Infrastructure\Persistence\Repositories;
+namespace App\Infrastructure\Adapters\Persistence;
 
-use App\Domain\Autor\Models\Autor;
-use App\Domain\Autor\Repositories\AutorRepositoryInterface;
+use App\Domain\Autor\Entities\Autor;
+use App\Domain\Autor\ports\AutorRepositoryInterface;
 
 class EloquentAutorRepository implements AutorRepositoryInterface
 {

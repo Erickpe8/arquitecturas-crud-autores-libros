@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\Autor\Models;
+namespace App\Domain\Autor\Entities;
 
-use App\Domain\Libro\Models\Libro;
+use App\Domain\Libro\Entities\Libro;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
