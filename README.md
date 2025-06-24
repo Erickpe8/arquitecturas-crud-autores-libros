@@ -1,7 +1,9 @@
 # 🧱 Arquitectura MVC (Model-View-Controller)
 
 ## 📂 Estructura de carpetas
-![image](https://github.com/user-attachments/assets/6e881d39-c08d-4f78-8822-cc50db7e50be)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/6e881d39-c08d-4f78-8822-cc50db7e50be" alt="image" width="600">
+</div>
 
 ---
 
