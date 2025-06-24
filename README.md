@@ -41,18 +41,21 @@ A continuación se listan las arquitecturas aplicadas, con una breve descripció
    ```bash
    git clone https://github.com/Erickpe8/arquitecturas-crud-autores-libros.git
    ```
+   
 
 2. Accede a la rama de la arquitectura que quieras explorar:
 
    ```bash
    git checkout nombre-de-la-rama
    ```
+   solo debes remplazar al nombre de la rama que quieras trabajar en donde dice "nombre-de-la-rama"
 
 3. Instala las dependencias:
 
    ```bash
    composer install
-   npm install && npm run dev
+   npm install
+   npm run dev
    ```
 
 4. Crea y configura tu archivo `.env`:
@@ -69,19 +72,32 @@ A continuación se listan las arquitecturas aplicadas, con una breve descripció
    ```
 
 ---
+## 🤖Tecnologias usadas
 
+A continuación se detallan las principales tecnologías empleadas en el desarrollo del sistema:
+
+- **PHP 8.1**: Lenguaje de programación principal para el backend.
+- **Laravel 10**: Framework de PHP utilizado para estructurar la aplicación y facilitar el desarrollo con patrones como MVC, hexagonal y Clean Architecture.
+- **MySQL**: Sistema de gestión de bases de datos relacional usado para el almacenamiento persistente de la información.
+- **Composer**: Herramienta de gestión de dependencias para PHP.
+- **Blade**: Motor de plantillas de Laravel utilizado para el frontend.
+- **HTML5 y CSS3**: Lenguajes base para la estructura y estilo del sitio.
+- **JavaScript**: Para mejorar la interacción del usuario en el frontend.
+- **Git**: Sistema de control de versiones utilizado para el manejo del código fuente.
+- **GitHub**: Plataforma para alojar el repositorio del proyecto y gestionar la colaboración.
+- **Laragon**: Entorno de desarrollo local utilizado para correr la aplicación de forma eficiente.
+---
 ## 📚 ¿Por qué comparar arquitecturas?
 
-Comparar arquitecturas con un mismo caso de uso permite:
+Comparar arquitecturas con un mismo caso de uso permite entender cómo varía la estructura del código con cada enfoque arquitectónico, visualizar la separación de responsabilidades, evaluar la escalabilidad y mantenibilidad de cada arquitectura, y analizar la claridad en el flujo de datos y la lógica de negocio.
 
-- Entender cómo cambia la estructura del código con cada enfoque.
-- Visualizar la separación de responsabilidades.
-- Evaluar qué tan escalable o mantenible es cada arquitectura.
-- Analizar la claridad en el flujo de datos y lógica de negocio.
 
 ---
 
-## 🧑‍💻 Autor
+## Muchas gracias por llegar hasta aqui 
+Si estan interesados en conocer un poco más a fondo este proyecto o saber como realizar el proceso de instalación no duden en contactarme, lo pueden hacer por mis redes sociales las cuales aparecen en mi perfir de GitHub o via correo electronico ericksperezc@gmail.com
 
-**Erick Pérez**  
-GitHub: [@Erickpe8](https://github.com/Erickpe8)
+- 🎥 [YouTube](https://www.youtube.com/@ErickPerez_8)
+- 📸 [Instagram](https://www.instagram.com/erickperez_8/)
+
+¡Gracias por visitar mi perfil! 💻✨
