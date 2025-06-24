@@ -2,7 +2,7 @@
 
 namespace App\Domain\Libro\Services;
 
-use App\Domain\Libro\Contracts\LibroRepositoryInterface;
+use App\Domain\Contracts\LibroRepositoryInterface;
 
 class LibroService
 {

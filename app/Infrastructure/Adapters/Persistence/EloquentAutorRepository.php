@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Adapters\Persistence;
 
-use App\Domain\Autor\Entities\Autor;
-use App\Domain\Autor\Contracts\AutorRepositoryInterface;
+use App\Domain\Entities\Autor;
+use App\Domain\Contracts\AutorRepositoryInterface;
 
 class EloquentAutorRepository implements AutorRepositoryInterface
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Libro\Entities;
+namespace App\Domain\Entities;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Domain\Autor\Entities\Autor;
+use App\Domain\Entities\Autor;
 
 class Libro extends Model
 {

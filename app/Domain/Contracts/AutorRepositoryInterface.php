@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Autor\Contracts;
+namespace App\Domain\Contracts;
 
 interface AutorRepositoryInterface
 {
