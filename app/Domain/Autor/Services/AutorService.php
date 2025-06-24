@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Domain\Autor\Ports\AutorRepositoryInterface;
+use App\Domain\Autor\Contracts\AutorRepositoryInterface;
 
 
 

@@ -2,7 +2,7 @@
 
 namespace App\Application\Autor\UseCases;
 
-use App\Domain\Autor\Ports\AutorRepositoryInterface;
+use App\Domain\Autor\Contracts\AutorRepositoryInterface;
 
 class FindAutor
 {

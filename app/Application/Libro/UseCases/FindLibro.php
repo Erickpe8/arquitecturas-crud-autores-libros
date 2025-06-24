@@ -2,7 +2,7 @@
 
 namespace App\Application\Libro\UseCases;
 
-use App\Domain\Libro\Ports\LibroRepositoryInterface;
+use App\Domain\Libro\Contracts\LibroRepositoryInterface;
 
 class FindLibro
 {

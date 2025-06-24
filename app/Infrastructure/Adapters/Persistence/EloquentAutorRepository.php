@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Adapters\Persistence;
 
 use App\Domain\Autor\Entities\Autor;
-use App\Domain\Autor\ports\AutorRepositoryInterface;
+use App\Domain\Autor\Contracts\AutorRepositoryInterface;
 
 class EloquentAutorRepository implements AutorRepositoryInterface
 {

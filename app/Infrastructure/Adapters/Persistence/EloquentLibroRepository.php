@@ -3,7 +3,7 @@
 namespace App\Infrastructure\Adapters\Persistence;
 
 use App\Domain\Libro\Entities\Libro;
-use App\Domain\Libro\ports\LibroRepositoryInterface;
+use App\Domain\Libro\Contracts\LibroRepositoryInterface;
 
 class EloquentLibroRepository implements LibroRepositoryInterface
 {

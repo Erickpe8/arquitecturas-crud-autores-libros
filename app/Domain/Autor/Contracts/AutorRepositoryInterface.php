@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Autor\Ports;
+namespace App\Domain\Autor\Contracts;
 
 interface AutorRepositoryInterface
 {
