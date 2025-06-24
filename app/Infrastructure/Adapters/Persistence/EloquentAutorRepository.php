@@ -9,7 +9,8 @@ class EloquentAutorRepository implements AutorRepositoryInterface
 {
     public function all()
     {
-        return Autor::all();
+        return Autor::withCount('libros')->get();
+
     }
 
     public function find(int $id)
@@ -34,4 +35,6 @@ class EloquentAutorRepository implements AutorRepositoryInterface
         $autor = Autor::findOrFail($id);
         return $autor->delete();
     }
+
+
 }
