@@ -24,4 +24,12 @@ La arquitectura **Service Layer** introduce una capa intermedia (services) que c
 - Simplifica los controladores.
 
 
+## Muchas gracias por llegar hasta aquí
+Si estan interesados en conocer un poco más a fondo este proyecto o saber como realizar el proceso de instalación no duden en contactarme, lo pueden hacer por mis redes sociales las cuales aparecen en mi perfir de GitHub o via correo electronico ericksperezc@gmail.com
+
+- 🎥 [YouTube](https://www.youtube.com/@ErickPerez_8)
+- 📸 [Instagram](https://www.instagram.com/erickperez_8/)
+
+¡Gracias por visitar mi perfil! 💻✨
+
 
