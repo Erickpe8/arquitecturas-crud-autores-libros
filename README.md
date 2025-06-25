@@ -1,45 +1,76 @@
-# 🧱 Arquitectura MVC (Model-View-Controller)
+# 🧩 Arquitectura: MVC (Modelo - Vista - Controlador)
 
-## 📂 Estructura de carpetas
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/6e881d39-c08d-4f78-8822-cc50db7e50be" alt="image" width="600">
-</div>
+## 🧠 Descripción General
 
----
+**MVC** (Model-View-Controller) es uno de los patrones arquitectónicos más clásicos y utilizados en el desarrollo de aplicaciones web. Su principal objetivo es separar las responsabilidades en tres componentes principales:
 
-## 🧠 Descripción general
+- **Modelo (Model):** Se encarga de gestionar los datos, lógica de negocio y acceso a la base de datos.
+- **Vista (View):** Es la capa de presentación. Define cómo se muestran los datos al usuario.
+- **Controlador (Controller):** Actúa como intermediario entre el modelo y la vista, manejando las solicitudes del usuario, invocando lógica del modelo y retornando una vista adecuada.
 
-La arquitectura **MVC** (Modelo-Vista-Controlador) es un patrón clásico utilizado para aplicaciones web, que para nuestra suerte ya viene por defecto implementado dentro de Laravel, este divide la aplicación en tres capas principales:
-
-- **Modelo (Model):** Encargado de la lógica de acceso a los datos y las reglas del negocio.
-- **Vista (View):** Presenta los datos al usuario mediante HTML/Blade.
-- **Controlador (Controller):** Gestiona las solicitudes HTTP, orquesta la lógica básica y conecta el modelo con la vista.
-
----
-
-## 🛠️ Función de cada capa
-
-| Capa       | Rol                                                                 |
-|------------|----------------------------------------------------------------------|
-| **Model**      | Define la estructura de datos (por ejemplo, `Autor`) y se comunica con la base de datos mediante Eloquent. |
-| **View**       | Renderiza interfaces (Blade) para mostrar y capturar información. |
-| **Controller** | Recibe la solicitud, ejecuta validaciones, llama al modelo y envía la vista correspondiente. |
+En este CRUD de autores y libros, MVC permite:
+- Tener una organización clara de responsabilidades.
+- Facilitar el desarrollo rápido gracias a la simplicidad del patrón.
+- Permitir un buen punto de inicio antes de escalar a arquitecturas más complejas como DDD o CQRS.
+- Reducir el acoplamiento entre la lógica de negocio y la interfaz de usuario.
 
 ---
 
-## ✅ Ventajas
+## 🧩 Funciones de Cada Capa
 
-- Simplicidad: Fácil de entender e implementar.
-- Rápida para desarrollar prototipos.
-- Todo está integrado directamente con Laravel.
+- **Models:** Contienen las clases Eloquent que representan las tablas de la base de datos.
+- **Controllers:** Manejan las rutas, validaciones y lógica de conexión entre vista y modelo.
+- **Views:** Plantillas Blade que renderizan la interfaz de usuario.
 
 ---
 
-## ⚠️ Desventajas
+# 📚 Estructura de carpetas
 
-- Poca separación de responsabilidades en controladores grandes.
-- El modelo puede volverse monolítico al crecer la lógica.
-- No escala bien en sistemas grandes.
+## 📂 app/Http/Controllers
+
+| Archivo                | Función                                                                 |
+|------------------------|-------------------------------------------------------------------------|
+| `AutorController.php`  | Maneja todas las acciones (index, create, store, edit, update, destroy) de autores. |
+| `LibroController.php`  | Controlador para la gestión de libros.                                 |
+| `Controller.php`       | Clase base de la cual heredan los demás controladores.                  |
+
+---
+
+## 📂 app/Models
+
+| Archivo         | Función                                                    |
+|-----------------|-------------------------------------------------------------|
+| `Autor.php`     | Modelo Eloquent que representa la entidad Autor.           |
+| `Libro.php`     | Modelo Eloquent que representa la entidad Libro.           |
+
+---
+
+## 📂 resources/views/autores
+
+| Archivo                | Función                                          |
+|------------------------|--------------------------------------------------|
+| `index.blade.php`      | Muestra la lista de autores.                     |
+| `create.blade.php`     | Formulario para crear un nuevo autor.            |
+| `edit.blade.php`       | Formulario para editar un autor existente.       |
+
+---
+
+## 📂 resources/views/libros
+
+| Archivo                | Función                                          |
+|------------------------|--------------------------------------------------|
+| `index.blade.php`      | Muestra la lista de libros.                      |
+| `create.blade.php`     | Formulario para registrar un nuevo libro.        |
+| `edit.blade.php`       | Formulario para modificar un libro existente.    |
+
+---
+
+# ✅ Ventajas
+
+- Fácil de entender y aplicar, ideal para proyectos pequeños y medianos.
+- Estructura básica que permite crecer hacia arquitecturas más avanzadas.
+- Rápido desarrollo con herramientas de Laravel como Eloquent y Blade.
+- Excelente para prototipos o MVPs (productos mínimos viables).
 
 ---
 
