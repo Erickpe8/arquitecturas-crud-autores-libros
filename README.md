@@ -1,5 +1,7 @@
+# 🏗️ Arquitecturas CRUD - Autores y Libros
 
-# arquitecturas-crud-autores-libros
+![GitHub Repo Stats](https://img.shields.io/github/stars/Erickpe8/arquitecturas-crud-autores-libros?style=social)
+![GitHub Forks](https://img.shields.io/github/forks/Erickpe8/arquitecturas-crud-autores-libros?style=social)
 
 Este repositorio presenta la aplicación de **diferentes arquitecturas de software** dentro de un mismo proyecto CRUD desarrollado con **Laravel**. El objetivo es demostrar cómo varía la organización del código al aplicar distintos enfoques arquitectónicos, manteniendo la misma lógica de negocio: un sistema de gestión de autores y libros.
 
