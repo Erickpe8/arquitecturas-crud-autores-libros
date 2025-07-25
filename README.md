@@ -84,7 +84,6 @@ A continuación se detallan las principales tecnologías empleadas en el desarro
 - **Composer**: Herramienta de gestión de dependencias para PHP.
 - **Blade**: Motor de plantillas de Laravel utilizado para el frontend.
 - **HTML5 y CSS3**: Lenguajes base para la estructura y estilo del sitio.
-- **JavaScript**: Para mejorar la interacción del usuario en el frontend.
 - **Git**: Sistema de control de versiones utilizado para el manejo del código fuente.
 - **GitHub**: Plataforma para alojar el repositorio del proyecto y gestionar la colaboración.
 - **Laragon**: Entorno de desarrollo local utilizado para correr la aplicación de forma eficiente.
