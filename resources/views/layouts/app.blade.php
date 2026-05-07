@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Biblioteca MVC')</title>
+    <title>@yield('title', 'Biblioteca · Service Layer')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .text-fg-brand { color: #1e293b; }
@@ -56,7 +56,7 @@
         <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between p-4">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <span class="flex h-8 w-8 items-center justify-center rounded-base bg-brand text-sm font-bold text-white">B</span>
-                <span class="self-center whitespace-nowrap text-xl font-semibold text-heading">Biblioteca MVC</span>
+                <span class="self-center whitespace-nowrap text-xl font-semibold text-heading">Biblioteca · Service Layer</span>
             </a>
             <button id="navbar-toggle" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-base p-2 text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300 md:hidden" aria-controls="navbar-default" aria-expanded="false">
                 <span class="sr-only">Abrir menu principal</span>
