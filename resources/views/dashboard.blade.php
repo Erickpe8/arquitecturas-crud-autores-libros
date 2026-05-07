@@ -6,7 +6,7 @@
     <div class="mb-8 flex items-center justify-between">
         <div>
             <h1 class="text-3xl font-bold">Dashboard de Biblioteca</h1>
-            <p class="mt-1 text-slate-600">Gestión básica de autores y libros con Laravel MVC.</p>
+            <p class="mt-1 text-slate-600">Gestión básica de autores y libros en Laravel con CQRS (comandos de escritura y consultas de lectura).</p>
         </div>
         <div class="flex gap-2">
             <a href="{{ route('autores.create') }}" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">Nuevo autor</a>
