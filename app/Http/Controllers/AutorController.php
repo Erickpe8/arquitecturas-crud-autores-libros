@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Autor;
+use App\Services\AuthorService;
 use Illuminate\Http\Request;
 
 class AutorController extends Controller
 {
+    public function __construct(private readonly AuthorService $authorService)
+    {
+    }
+
     public function index()
     {
         $search = request('search');
-
-        $autores = Autor::withCount('libros')
-            ->when($search, fn ($query) => $query->where('nombre', 'like', "%{$search}%"))
-            ->orderBy('nombre')
-            ->paginate(24)
-            ->withQueryString();
+        $autores = $this->authorService->index($search);
 
         return view('autores.index', compact('autores', 'search'));
     }
@@ -27,21 +27,15 @@ class AutorController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:120'],
-            'nacionalidad' => ['nullable', 'string', 'max:120'],
-            'fecha_nacimiento' => ['nullable', 'date'],
-            'biografia' => ['nullable', 'string', 'max:2000'],
-        ]);
-
-        Autor::create($data);
+        $data = $request->validate($this->authorService->storeRules());
+        $this->authorService->store($data);
 
         return redirect()->route('autores.index')->with('success', 'Autor creado correctamente.');
     }
 
     public function show(Autor $autor)
     {
-        $autor->load(['libros' => fn ($query) => $query->latest('fecha_publicacion')]);
+        $autor = $this->authorService->show($autor);
 
         return view('autores.show', compact('autor'));
     }
@@ -53,21 +47,15 @@ class AutorController extends Controller
 
     public function update(Request $request, Autor $autor)
     {
-        $data = $request->validate([
-            'nombre' => ['required', 'string', 'max:120'],
-            'nacionalidad' => ['nullable', 'string', 'max:120'],
-            'fecha_nacimiento' => ['nullable', 'date'],
-            'biografia' => ['nullable', 'string', 'max:2000'],
-        ]);
-
-        $autor->update($data);
+        $data = $request->validate($this->authorService->updateRules());
+        $autor = $this->authorService->update($autor, $data);
 
         return redirect()->route('autores.show', $autor)->with('success', 'Autor actualizado correctamente.');
     }
 
     public function destroy(Autor $autor)
     {
-        $autor->delete();
+        $this->authorService->destroy($autor);
 
         return redirect()->route('autores.index')->with('success', 'Autor eliminado correctamente.');
     }
