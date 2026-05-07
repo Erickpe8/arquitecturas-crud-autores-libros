@@ -2,40 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Autor;
-use App\Models\Genero;
+use App\DTOs\BookWriteDto;
+use App\Infrastructure\Framework\PaginatorPresenter;
+use App\Interfaces\Storage\CoverStorageInterface;
 use App\Models\Libro;
+use App\UseCases\Books\CreateBookUseCase;
+use App\UseCases\Books\DeleteBookUseCase;
+use App\UseCases\Books\GetBookFormOptionsUseCase;
+use App\UseCases\Books\ListBooksUseCase;
+use App\UseCases\Books\ShowBookUseCase;
+use App\UseCases\Books\UpdateBookUseCase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
+/**
+ * Adaptador de interfaz (HTTP): traduce requests del framework a casos de uso.
+ */
 class LibroController extends Controller
 {
+    public function __construct(
+        private readonly ListBooksUseCase $listBooks,
+        private readonly GetBookFormOptionsUseCase $bookFormOptions,
+        private readonly ShowBookUseCase $showBook,
+        private readonly CreateBookUseCase $createBook,
+        private readonly UpdateBookUseCase $updateBook,
+        private readonly DeleteBookUseCase $deleteBook,
+        private readonly CoverStorageInterface $coverStorage,
+    ) {}
+
     public function index()
     {
         $search = request('search');
         $genero = request('genero');
 
-        $libros = Libro::with('autor')
-            ->when($search, fn ($query) => $query->where('titulo', 'like', "%{$search}%"))
-            ->when($genero, fn ($query) => $query->where('genero', $genero))
-            ->latest()
-            ->paginate(24)
-            ->withQueryString();
+        $read = $this->listBooks->execute($search, $genero);
+        $libros = PaginatorPresenter::fromPageResult($read->booksPage);
 
-        $generos = Genero::query()
-            ->orderBy('nombre')
-            ->pluck('nombre');
-
-        return view('libros.index', compact('libros', 'search', 'genero', 'generos'));
+        return view('libros.index', [
+            'libros' => $libros,
+            'search' => $search,
+            'genero' => $genero,
+            'generos' => $read->generos,
+        ]);
     }
 
     public function create()
     {
-        $autores = Autor::orderBy('nombre')->pluck('nombre', 'id');
-        $generos = Genero::orderBy('nombre')->pluck('nombre');
+        $opts = $this->bookFormOptions->execute();
 
-        return view('libros.create', compact('autores', 'generos'));
+        return view('libros.create', ['autores' => $opts['autores'], 'generos' => $opts['generos']]);
     }
 
     public function store(Request $request)
@@ -51,27 +66,33 @@ class LibroController extends Controller
         ]);
 
         if ($request->hasFile('portada')) {
-            $data['portada'] = $request->file('portada')->store('portadas', 'public');
+            $data['portada'] = $this->coverStorage->storeFromUploaded($request->file('portada'));
         }
 
-        Libro::create($data);
+        $this->createBook->execute(new BookWriteDto($data));
 
         return redirect()->route('libros.index')->with('success', 'Libro creado correctamente.');
     }
 
     public function show(Libro $libro)
     {
-        $libro->load('autor');
+        $entity = $this->showBook->execute($libro->id);
+        abort_if($entity === null, 404);
 
-        return view('libros.show', compact('libro'));
+        return view('libros.show', ['libro' => $entity]);
     }
 
     public function edit(Libro $libro)
     {
-        $autores = Autor::orderBy('nombre')->pluck('nombre', 'id');
-        $generos = Genero::orderBy('nombre')->pluck('nombre');
+        $opts = $this->bookFormOptions->execute();
+        $entity = $this->showBook->execute($libro->id);
+        abort_if($entity === null, 404);
 
-        return view('libros.edit', compact('libro', 'autores', 'generos'));
+        return view('libros.edit', [
+            'libro' => $entity,
+            'autores' => $opts['autores'],
+            'generos' => $opts['generos'],
+        ]);
     }
 
     public function update(Request $request, Libro $libro)
@@ -87,24 +108,17 @@ class LibroController extends Controller
         ]);
 
         if ($request->hasFile('portada')) {
-            if ($libro->portada && Storage::disk('public')->exists($libro->portada)) {
-                Storage::disk('public')->delete($libro->portada);
-            }
-            $data['portada'] = $request->file('portada')->store('portadas', 'public');
+            $data['portada'] = $this->coverStorage->storeFromUploaded($request->file('portada'));
         }
 
-        $libro->update($data);
+        $updated = $this->updateBook->execute($libro->id, new BookWriteDto($data));
 
-        return redirect()->route('libros.show', $libro)->with('success', 'Libro actualizado correctamente.');
+        return redirect()->route('libros.show', ['libro' => $updated->id])->with('success', 'Libro actualizado correctamente.');
     }
 
     public function destroy(Libro $libro)
     {
-        if ($libro->portada && Storage::disk('public')->exists($libro->portada)) {
-            Storage::disk('public')->delete($libro->portada);
-        }
-
-        $libro->delete();
+        $this->deleteBook->execute($libro->id);
 
         return redirect()->route('libros.index')->with('success', 'Libro eliminado correctamente.');
     }

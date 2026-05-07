@@ -22,8 +22,8 @@
             <p class="mt-5 text-slate-700">{{ $libro->descripcion ?? 'Sin descripción.' }}</p>
 
             <div class="mt-6 flex gap-3">
-                <a href="{{ route('libros.edit', $libro) }}" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">Editar</a>
-                <form action="{{ route('libros.destroy', $libro) }}" method="POST" onsubmit="return confirm('¿Eliminar libro?')">
+                <a href="{{ route('libros.edit', ['libro' => $libro->id]) }}" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">Editar</a>
+                <form action="{{ route('libros.destroy', ['libro' => $libro->id]) }}" method="POST" onsubmit="return confirm('¿Eliminar libro?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="text-fg-brand bg-neutral-primary border border-brand hover:bg-brand hover:text-white focus:ring-4 focus:ring-brand-subtle font-medium leading-5 rounded-base text-xs px-3 py-2 focus:outline-none">Eliminar</button>

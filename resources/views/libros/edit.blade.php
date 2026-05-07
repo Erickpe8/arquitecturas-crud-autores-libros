@@ -5,7 +5,7 @@
 @section('content')
     <h1 class="mb-6 text-2xl font-bold">Editar libro</h1>
 
-    <form action="{{ route('libros.update', $libro) }}" method="POST" enctype="multipart/form-data" class="rounded-xl bg-white p-6 shadow">
+    <form action="{{ route('libros.update', ['libro' => $libro->id]) }}" method="POST" enctype="multipart/form-data" class="rounded-xl bg-white p-6 shadow">
         @csrf
         @method('PUT')
         @include('libros.partials.form', ['libro' => $libro])

@@ -2,22 +2,17 @@
 
 use App\Http\Controllers\AutorController;
 use App\Http\Controllers\LibroController;
-use App\Models\Autor;
-use App\Models\Libro;
+use App\UseCases\Dashboard\GetDashboardStatsUseCase;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $totalAutores = Autor::count();
-    $totalLibros = Libro::count();
-    $generoMasRegistrado = Libro::query()
-        ->select('genero')
-        ->whereNotNull('genero')
-        ->where('genero', '!=', '')
-        ->groupBy('genero')
-        ->orderByRaw('COUNT(*) DESC')
-        ->value('genero');
+Route::get('/', function (GetDashboardStatsUseCase $stats) {
+    $d = $stats->execute();
 
-    return view('dashboard', compact('totalAutores', 'totalLibros', 'generoMasRegistrado'));
+    return view('dashboard', [
+        'totalAutores' => $d->totalAutores,
+        'totalLibros' => $d->totalLibros,
+        'generoMasRegistrado' => $d->generoMasRegistrado,
+    ]);
 })->name('dashboard');
 
 Route::resource('autores', AutorController::class)->parameters([
