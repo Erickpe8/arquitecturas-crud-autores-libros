@@ -1,58 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Biblioteca Laravel — MVC
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Descripción general
 
-## About Laravel
+Este proyecto es una aplicación web de biblioteca construida con **Laravel 13** que permite gestionar autores y libros mediante operaciones CRUD, búsquedas y vistas construidas con **Blade** y **TailwindCSS**. En esta rama el backend sigue el enfoque **MVC tradicional de Laravel**: la lógica de consultas y persistencia reside principalmente en los controladores junto con los modelos **Eloquent**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+El repositorio tiene **varias ramas**, cada una con la misma funcionalidad base pero con una organización de backend distinta; esta documentación corresponde a la rama **`mvc`**. El propósito es facilitar el **estudio comparativo** de patrones arquitectónicos sobre un mismo dominio funcional.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Arquitectura implementada
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**MVC (Model–View–Controller)** en Laravel separa la presentación (**Blade**), la coordinación HTTP (**controladores**) y el acceso a datos (**modelos Eloquent**). Las rutas delegan en los controladores, que validan la entrada y ejecutan operaciones sobre los modelos.
 
-## Learning Laravel
+El objetivo es mantener una curva de aprendizaje **baja** y una estructura **directa**, típica de aplicaciones CRUD pequeñas. Las ventajas principales son simplicidad, menos archivos intermediarios y convenciones muy conocidas del ecosistema Laravel.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Respecto a un diseño más “en capas”, aquí los controladores suelen concentrar **consultas encadenadas y persistencia** junto con la respuesta HTTP.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Estructura del proyecto
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Árbol simplificado y real de las carpetas relevantes en esta rama:
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```text
+app/
+├── Http/
+│   └── Controllers/
+├── Models/
+└── Providers/
+bootstrap/
+config/
+database/
+├── factories/
+├── migrations/
+└── seeders/
+public/
+resources/
+├── css/
+├── js/
+└── views/
+routes/
+tests/
+composer.json
+package.json
+vite.config.js
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Explicación de carpetas y responsabilidades
 
-## Contributing
+- **`app/Http/Controllers`**: Punto de entrada HTTP tras las rutas. Valida datos (`Request`), ejecuta consultas y comandos sobre los modelos Eloquent y devuelve vistas o redirecciones.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **`app/Models`**: Modelos activos (`Autor`, `Libro`, `Genero`, etc.) con `$fillable`, relaciones (`hasMany`, `belongsTo`) y en algunos casos **accessors** (por ejemplo URL de portada).
 
-## Code of Conduct
+- **`app/Providers`**: Arranque y configuración de servicios Laravel (`AppServiceProvider` sin registros arquitectónicos adicionales en esta rama).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **`database/`**, **`resources/views/`**, **`routes/`**: Migraciones, seeders, vistas Blade y rutas web (recursos REST para `autores` y `libros`).
 
-## Security Vulnerabilities
+La separación es esencialmente la **convención estándar** de Laravel: controladores delgados o voluminosos según la operación, sin capas obligatorias de servicios o repositorios.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Flujo de funcionamiento
 
-## License
+1. **Entrada**: Laravel recibe la petición y enruta a `AutorController` o `LibroController`, o ejecuta la closure del dashboard en `routes/web.php`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2. **Procesamiento**: El controlador valida la entrada cuando corresponde y ejecuta directamente consultas Eloquent (`Autor::…`, `Libro::…`, `Genero::…`) sobre los modelos.
+
+3. **Flujo interno**: Las relaciones de modelos cargan datos relacionados (`with`, `load`) donde la vista lo necesita.
+
+4. **Acceso a datos**: Todo el acceso pasa por **Eloquent** contra las tablas definidas en migraciones.
+
+5. **Respuesta final**: Se renderiza una vista Blade con los datos compactados o se redirige con mensajes flash.
+
+## Funcionalidades actuales
+
+- CRUD de autores (listado con búsqueda por nombre, alta, edición, detalle con libros asociados, eliminación).
+- CRUD de libros (listado con búsqueda por título y filtro por género, alta con portada opcional, edición, detalle con autor, eliminación con borrado de portada en disco cuando aplica).
+- Relación autor–libros reflejada en vistas y datos persistidos con claves foráneas.
+- Dashboard de inicio con totales de autores y libros y género más frecuente entre los libros registrados.
+- Tabla de géneros precargada por seeders para selects del formulario de libros.
+
+## Tecnologías utilizadas
+
+- Laravel 13
+- PHP
+- MySQL
+- Blade
+- TailwindCSS
+- Eloquent ORM
+- Composer
+- Vite
+- Git
+- GitHub
+
+## Instalación del proyecto
+
+```bash
+git clone https://github.com/Erickpe8/arquitecturas-crud-autores-libros.git
+```
+
+```bash
+composer install
+```
+
+```bash
+npm install
+npm run dev
+```
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+```bash
+php artisan migrate --seed
+```
+
+```bash
+php artisan serve
+```
+
+## Seeders y datos de prueba
+
+Los seeders (`AuthorSeeder`, `GeneroSeeder`, `BookSeeder`) cargan autores reconocibles, un conjunto amplio de libros (del orden de un centenar de registros) con ISBN generados, géneros alineados a la tabla `generos`, y relaciones válidas entre libros y autores para probar listados, filtros y vistas de detalle.
+
+## Comparación con MVC tradicional
+
+Esta rama **es** la línea base MVC clásica sobre Laravel: no hay repositorios ni casos de uso intermedios. Las responsabilidades están reunidas en controladores y modelos; cualquier otra rama del repositorio introduce **separación adicional** con distintos trade-offs (más archivos y límites de capas más claros).
+
+## Objetivo educativo
+
+El proyecto permite **comparar** cómo se organiza el mismo CRUD bajo distintas arquitecturas en ramas paralelas, **enseñar** principios de separación de responsabilidades y dependencias, **analizar** ventajas y costes de cada estilo, y **evaluar** qué tan útil es cada enfoque en aplicaciones Laravel de tamaño modesto.
+
+## Muchas gracias por llegar hasta aqui 
+Si estan interesados en conocer un poco más a fondo este proyecto o saber como realizar el proceso de instalación no duden en contactarme, lo pueden hacer por mis redes sociales las cuales aparecen en mi perfir de GitHub o via correo electronico ericksperezc@gmail.com
+
+- 🎥 [YouTube](https://www.youtube.com/@ErickPerez_8)
+- 📸 [Instagram](https://www.instagram.com/erickperez_8/)
+
+¡Gracias por visitar mi perfil! 💻✨
