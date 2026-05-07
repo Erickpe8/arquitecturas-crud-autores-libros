@@ -2,16 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Models\Autor;
-use App\Models\Libro;
+use App\Domains\Author\Models\Author;
+use App\Domains\Book\Models\Book;
 use Illuminate\Database\Seeder;
 
 class LibroSeeder extends Seeder
 {
     public function run(): void
     {
-        Autor::all()->each(function (Autor $autor) {
-            Libro::factory()
+        Author::all()->each(function (Author $autor) {
+            Book::factory()
                 ->count(rand(2, 5))
                 ->create(['autor_id' => $autor->id]);
         });

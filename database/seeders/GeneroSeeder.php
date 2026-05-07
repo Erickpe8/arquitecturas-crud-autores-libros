@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Genero;
+use App\Domains\Book\Models\Genre;
 use Illuminate\Database\Seeder;
 
 class GeneroSeeder extends Seeder
@@ -23,7 +23,7 @@ class GeneroSeeder extends Seeder
         ];
 
         foreach ($generos as $genero) {
-            Genero::updateOrCreate(
+            Genre::updateOrCreate(
                 ['nombre' => $genero['nombre']],
                 $genero
             );

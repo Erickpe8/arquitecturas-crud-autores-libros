@@ -2,15 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Autor;
-use App\Models\Libro;
+use App\Domains\Author\Models\Author;
+use App\Domains\Book\Models\Book;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Libro>
+ * @extends Factory<Book>
  */
 class LibroFactory extends Factory
 {
+    protected $model = Book::class;
+
     /**
      * Define the model's default state.
      *
@@ -27,7 +29,7 @@ class LibroFactory extends Factory
             'genero' => fake()->randomElement(['Novela', 'Ciencia Ficcion', 'Historia', 'Fantasia', 'Drama', 'Tecnologia']),
             'isbn' => strtoupper(fake()->bothify('ISBN-##########')),
             'portada' => null,
-            'autor_id' => Autor::factory(),
+            'autor_id' => Author::factory(),
         ];
     }
 }

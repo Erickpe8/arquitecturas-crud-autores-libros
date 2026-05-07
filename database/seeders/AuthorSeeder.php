@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Autor;
+use App\Domains\Author\Models\Author;
 use Illuminate\Database\Seeder;
 
 class AuthorSeeder extends Seeder
@@ -85,7 +85,7 @@ class AuthorSeeder extends Seeder
         ];
 
         foreach ($authors as $author) {
-            Autor::updateOrCreate(
+            Author::updateOrCreate(
                 ['nombre' => $author['nombre']],
                 $author
             );

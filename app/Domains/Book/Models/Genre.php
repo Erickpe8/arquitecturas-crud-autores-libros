@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Domains\Book\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Genero extends Model
+class Genre extends Model
 {
+    protected $table = 'generos';
+
     protected $fillable = [
         'nombre',
         'descripcion',

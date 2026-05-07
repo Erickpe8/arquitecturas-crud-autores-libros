@@ -2,15 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\Autor;
-use App\Models\Libro;
+use App\Domains\Author\Models\Author;
+use App\Domains\Book\Models\Book;
 use Illuminate\Database\Seeder;
 
 class BookSeeder extends Seeder
 {
     public function run(): void
     {
-        $authors = Autor::query()
+        $authors = Author::query()
             ->whereIn('nombre', [
                 'Gabriel Garcia Marquez',
                 'Julio Cortazar',
@@ -177,7 +177,7 @@ class BookSeeder extends Seeder
         }
 
         foreach ($rows as $row) {
-            Libro::updateOrCreate(
+            Book::updateOrCreate(
                 ['isbn' => $row['isbn']],
                 $row
             );

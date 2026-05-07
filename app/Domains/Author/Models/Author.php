@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Models;
+namespace App\Domains\Author\Models;
 
+use App\Domains\Book\Models\Book;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Autor extends Model
+class Author extends Model
 {
     use HasFactory;
+
+    protected $table = 'autors';
 
     protected $fillable = [
         'nombre',
@@ -19,6 +22,6 @@ class Autor extends Model
 
     public function libros(): HasMany
     {
-        return $this->hasMany(Libro::class);
+        return $this->hasMany(Book::class, 'autor_id');
     }
 }
