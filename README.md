@@ -1,58 +1,203 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Biblioteca Laravel — Arquitectura hexagonal (puertos y adaptadores)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Descripción del proyecto
 
-## About Laravel
+Es una aplicación web desarrollada en **Laravel** que permite gestionar **autores** y **libros** mediante operaciones CRUD. La web muestra un panel de control con información agregada.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Esta variante separa **núcleo**, **aplicación** e **infraestructura**:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- En **`Core`** viven el **dominio** (entidades/DTOs como `Author`, `Book`) y los **puertos salientes** (`AuthorRepositoryPort`, `BookRepositoryPort`, `CoverStoragePort`).
+- En **`Application`** hay **casos de uso** por comando (crear autor, listar libros, estadísticas del dashboard, etc.).
+- En **`Infrastructure`** están los **adaptadores** que hablan con Eloquent, el sistema de ficheros de Laravel y utilidades como paginación.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Los controladores HTTP actúan como **adaptadores de entrada**: solo reciben la petición y delegan en un caso de uso.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Arquitectura
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Entrada (web):** rutas → controladores → caso de uso correspondiente.
+2. **Aplicación:** cada clase `*UseCase` coordina el flujo sin conocer detalles de Laravel más allá de lo que los puertos exponen.
+3. **Dominio:** modelos ricos o resúmenes (`AuthorSummary`) y reglas compartidas donde aplique.
+4. **Salida:** implementaciones en `Infrastructure` que cumplen los puertos; enlazadas en `AppServiceProvider`.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+El dashboard usa `GetDashboardStatsUseCase` para mantener la misma separación que el resto de pantallas.
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Árbol del proyecto
 
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+app/
+├── Application/
+│   ├── Authors/
+│   │   ├── CreateAuthorUseCase.php
+│   │   ├── DeleteAuthorUseCase.php
+│   │   ├── GetAuthorWithBooksUseCase.php
+│   │   ├── ListAuthorsUseCase.php
+│   │   └── UpdateAuthorUseCase.php
+│   ├── Books/
+│   │   ├── CreateBookUseCase.php
+│   │   ├── DeleteBookUseCase.php
+│   │   ├── GetBookFormOptionsUseCase.php
+│   │   ├── GetBookUseCase.php
+│   │   ├── ListBooksUseCase.php
+│   │   └── UpdateBookUseCase.php
+│   └── Dashboard/
+│       └── GetDashboardStatsUseCase.php
+├── Core/
+│   ├── Domain/
+│   │   ├── Author.php
+│   │   ├── AuthorSummary.php
+│   │   └── Book.php
+│   ├── Pagination/
+│   │   └── PaginatedResult.php
+│   ├── Ports/
+│   │   └── Outbound/
+│   │       ├── AuthorRepositoryPort.php
+│   │       ├── BookRepositoryPort.php
+│   │       └── CoverStoragePort.php
+│   └── Services/
+│       └── BookCoverUrlGenerator.php
+├── Http/
+│   └── Controllers/
+│       ├── AutorController.php
+│       ├── LibroController.php
+│       └── Controller.php
+├── Infrastructure/
+│   ├── Laravel/
+│   │   └── PaginatorFactory.php
+│   ├── Persistence/
+│   │   └── Eloquent/
+│   │       ├── EloquentAuthorRepository.php
+│   │       ├── EloquentBookRepository.php
+│   │       └── EloquentDate.php
+│   └── Storage/
+│       └── LaravelCoverStorageAdapter.php
+├── Models/
+│   ├── Autor.php
+│   ├── Genero.php
+│   ├── Libro.php
+│   └── User.php
+└── Providers/
+    └── AppServiceProvider.php
+bootstrap/
+config/
+database/
+├── factories/
+├── migrations/
+└── seeders/
+public/
+resources/
+├── css/
+├── js/
+└── views/
+routes/
+├── console.php
+└── web.php
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## Carpetas principales
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Carpeta | Función |
+|---------|---------|
+| `app/Application` | Casos de uso (orquestación) |
+| `app/Core/Domain` | Modelos del núcleo |
+| `app/Core/Ports` | Contratos hacia persistencia y almacenamiento |
+| `app/Infrastructure` | Adaptadores Eloquent, disco, paginación |
+| `app/Http/Controllers` | Adaptadores HTTP → casos de uso |
+| `app/Models` | Modelos Eloquent usados por los adaptadores |
+| `resources/views` | Vistas Blade |
+| `routes` | Rutas web |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Flujo de una petición típica
 
-## Security Vulnerabilities
+1. Una acción del controlador resuelve el caso de uso por **inyección de dependencias**.
+2. El caso de uso usa **puertos** (`AuthorRepositoryPort`, etc.), no clases de infraestructura.
+3. Laravel entrega las implementaciones concretas registradas en `AppServiceProvider`.
+4. El resultado se mapea a vistas Blade o redirecciones HTTP.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Funcionalidades
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Panel de control:** totales y género más registrado vía `GetDashboardStatsUseCase`.
+- **CRUD de autores y libros:** cada operación tiene su caso de uso dedicado.
+- **Portadas:** subida y borrado abstractos tras `CoverStoragePort`.
+
+---
+
+## Tecnologías
+
+| Área | Tecnología |
+|------|------------|
+| Framework | Laravel |
+| Lenguaje | PHP |
+| Base de datos | MySQL (compatible con SQLite para desarrollo) |
+| Frontend | Blade, Vite, Tailwind CSS |
+| Empaquetado | npm |
+| Servidor local | `php artisan serve` |
+
+---
+
+## Instalación
+
+### Requisitos
+
+- PHP ≥ 8.2 con extensiones habituales de Laravel  
+- Composer  
+- Node.js y npm  
+- MySQL (o SQLite para pruebas rápidas)
+
+### Pasos
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Configura la base de datos en `.env` (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, etc.).
+
+```bash
+php artisan migrate
+npm install
+npm run build
+php artisan serve
+```
+
+Abre `http://127.0.0.1:8000` en el navegador.
+
+---
+
+## Seeders
+
+Para cargar datos de ejemplo:
+
+```bash
+php artisan db:seed
+```
+
+Semillas típicas: autor(es), género(s) y libro(s) para probar el CRUD y el panel sin crear registros a mano.
+
+---
+
+## Comparación con MVC «plano»
+
+En MVC clásico los controladores suelen acoplarse a **Eloquent y facades**. Aquí, la **lógica estable** depende de **interfaces (puertos)**; cambiar ORM o almacenamiento implica nuevos adaptadores sin reescribir casos de uso.
+
+---
+
+## Objetivo educativo
+
+Esta rama ilustra **hexagonal / puertos y adaptadores** en un proyecto Laravel realista: mismas pantallas que el CRUD MVC, con límites explícitos entre dominio, aplicación e infraestructura.
+
+---
+
+Muchas gracias por revisar este proyecto.
+
+Si tienes comentarios o sugerencias contactame en **ericksperezc@gmail.com**, seguime en [**YouTube**](https://www.youtube.com/@ericksperezc) y [**Instagram**](https://www.instagram.com/ericksperezc/).
