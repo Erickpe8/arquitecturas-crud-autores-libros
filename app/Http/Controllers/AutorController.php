@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Autor;
+use App\Repositories\Interfaces\AuthorRepositoryInterface;
 use Illuminate\Http\Request;
 
 class AutorController extends Controller
 {
+    public function __construct(private readonly AuthorRepositoryInterface $authorRepository)
+    {
+    }
+
     public function index()
     {
         $search = request('search');
-
-        $autores = Autor::withCount('libros')
-            ->when($search, fn ($query) => $query->where('nombre', 'like', "%{$search}%"))
-            ->orderBy('nombre')
-            ->paginate(24)
-            ->withQueryString();
+        $autores = $this->authorRepository->paginateWithSearch($search);
 
         return view('autores.index', compact('autores', 'search'));
     }
@@ -34,14 +34,14 @@ class AutorController extends Controller
             'biografia' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        Autor::create($data);
+        $this->authorRepository->create($data);
 
         return redirect()->route('autores.index')->with('success', 'Autor creado correctamente.');
     }
 
     public function show(Autor $autor)
     {
-        $autor->load(['libros' => fn ($query) => $query->latest('fecha_publicacion')]);
+        $autor = $this->authorRepository->loadForShow($autor);
 
         return view('autores.show', compact('autor'));
     }
@@ -60,14 +60,14 @@ class AutorController extends Controller
             'biografia' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        $autor->update($data);
+        $autor = $this->authorRepository->update($autor, $data);
 
         return redirect()->route('autores.show', $autor)->with('success', 'Autor actualizado correctamente.');
     }
 
     public function destroy(Autor $autor)
     {
-        $autor->delete();
+        $this->authorRepository->delete($autor);
 
         return redirect()->route('autores.index')->with('success', 'Autor eliminado correctamente.');
     }
