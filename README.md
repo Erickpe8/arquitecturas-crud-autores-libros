@@ -1,104 +1,104 @@
-# 🏗️ Arquitecturas CRUD - Autores y Libros
+# Arquitecturas CRUD — Autores y Libros | Repositorio comparativo
 
-![GitHub Repo Stats](https://img.shields.io/github/stars/Erickpe8/arquitecturas-crud-autores-libros?style=social)
-![GitHub Forks](https://img.shields.io/github/forks/Erickpe8/arquitecturas-crud-autores-libros?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/Erickpe8/arquitecturas-crud-autores-libros?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Erickpe8/arquitecturas-crud-autores-libros?style=social)
 
-Este repositorio presenta la aplicación de **diferentes arquitecturas de software** dentro de un mismo proyecto CRUD desarrollado con **Laravel**. El objetivo es demostrar cómo varía la organización del código al aplicar distintos enfoques arquitectónicos, manteniendo la misma lógica de negocio: un sistema de gestión de autores y libros.
+## Descripción general
 
-Este proyecto es ideal para entender las ventajas, desventajas y diferencias prácticas entre varias arquitecturas, todas contextualizadas en el mismo framework y caso de uso.
+Este repositorio agrupa **varias ramas** que implementan el mismo caso de uso funcional — gestión **CRUD** de **autores** y **libros** con **Laravel 13** — aplicando **distintas arquitecturas de organización del backend**. El fin es disponer de un **material comparativo** para analizar separación de responsabilidades, acoplamiento y coste de mantenimiento frente a un **MVC** convencional.
 
----
+La rama **`main`** contiene **únicamente documentación de entrada** para el repositorio (este archivo y exclusiones en `.gitignore`). El **código ejecutable** de la aplicación vive en ramas nombradas según el patrón (`mvc`, `repository-pattern`, `service-layer`, `domain-driven-design`, `hexagonal-architecture`, `cqrs`, `clean-architecture`).
 
-## 📁 Arquitecturas implementadas
+El dominio funcional se mantiene alineado entre ramas: altas, listados con **búsqueda y filtros**, ediciones, eliminaciones, **relaciones** autor–libro y datos de **género**, además de una **vista de inicio** con métricas agregadas donde el código está presente.
 
-A continuación se listan las arquitecturas aplicadas, con una breve descripción y un espacio para acceder a su respectiva rama del repositorio:
+## Arquitectura implementada
 
-1. **[Modelo – Vista – Controlador (MVC)](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/mvc)**  
-   Estructura básica y tradicional de Laravel. Se organiza en controladores, modelos y vistas. Es el punto de partida para comparar con las demás arquitecturas.
+En **`main`** no se implementa una arquitectura de aplicación Laravel: la rama cumple rol de **índice documental** del monorepositorio. La variante **MVC clásica** está en la rama **`mvc`**; el resto de ramas refactoriza la misma funcionalidad según el patrón indicado en el nombre de la rama.
 
-2. **[Repository Pattern](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/repository-pattern)**  
-   Introduce una capa intermedia entre el modelo y el controlador. Permite abstraer la lógica de acceso a datos, favoreciendo la reutilización y testabilidad.
+## Estructura del proyecto
 
-3. **[Service Layer](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/service-layer)**  
-   Añade una capa de servicios que encapsula la lógica de negocio. Los controladores delegan su funcionalidad en servicios, facilitando el mantenimiento.
+```bash
+.
+├── README.md
+└── .gitignore
+```
 
-4. **[Domain-Driven Design (DDD)](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/domain-driven-design)**  
-   Divide la aplicación en dominios específicos del negocio. Organiza las entidades, servicios, repositorios e interfaces bajo un mismo contexto.
+## Explicación de carpetas y responsabilidades
 
-5. **[Hexagonal Architecture (Ports and Adapters)](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/hexagonal-architecture)**  
-   Estructura el sistema alrededor de casos de uso. Separa la lógica interna de las dependencias externas mediante puertos y adaptadores.
+- **`README.md`**: Punto de entrada del repositorio; enlaces conceptuales a ramas por arquitectura e instrucciones comunes de instalación y seeders (aplicables tras cambiar de rama).
+- **`.gitignore`**: Patrones de archivos y carpetas locales que no deben versionarse.
 
-6. **[CQRS (Command Query Responsibility Segregation)](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/CQRS-(command-query-responsibility-segregation))**  
-   Separa las operaciones de lectura (queries) y escritura (commands) en componentes distintos. Permite optimizar cada flujo de forma independiente.
+Los directorios estándar de un proyecto Laravel (`app/`, `bootstrap/`, `config/`, `database/`, `public/`, `resources/`, `routes/`, etc.) aparecen **solo en las ramas que incluyen la aplicación**.
 
-7. **[Clean Architecture](https://github.com/Erickpe8/arquitecturas-crud-autores-libros/tree/clean-architecture)**  
-   Propone una organización por capas concéntricas, donde el dominio no depende de tecnologías externas. Aísla la lógica del negocio del framework.
+## Flujo de funcionamiento
 
----
+1. **Entrada:** clonación del repositorio y selección de una rama de arquitectura mediante `git checkout`.
+2. **Contexto activo:** el nombre de la rama determina la organización de `app/` y el flujo entre capas descrito en el README de esa rama.
+3. **Instalación:** dependencias Composer y npm, archivo `.env`, migraciones y datos semilla.
+4. **Acceso a datos:** según la rama, vía modelos Eloquent directamente o a través de capas intermedias (repositorios, servicios, casos de uso, comandos/consultas, etc.).
+5. **Salida:** respuestas HTTP con vistas **Blade** y los mismos recursos de rutas (`/`, `autores`, `libros`) en todas las ramas con código.
 
-## 🚀 ¿Cómo usar este repositorio?
+## Funcionalidades actuales
 
-1. Clona el repositorio:
+En las ramas con aplicación Laravel se mantiene: **CRUD de autores**, **CRUD de libros** (incluida **carga opcional de portada** donde el código lo contempla), **búsquedas** y **filtros** en listados, y **relaciones** persistentes entre autores, libros y catálogo de géneros. En **`main`** no hay pantallas ejecutables; sirve como mapa del repositorio.
 
-   ```bash
-   git clone https://github.com/Erickpe8/arquitecturas-crud-autores-libros.git
-   ```
-   
+## Tecnologías utilizadas
 
-2. Accede a la rama de la arquitectura que quieras explorar:
+- Laravel 13
+- PHP
+- MySQL
+- Blade
+- TailwindCSS
+- Eloquent ORM
+- Composer
+- Vite
+- Git
+- GitHub
 
-   ```bash
-   git checkout nombre-de-la-rama
-   ```
-   solo debes remplazar al nombre de la rama que quieras trabajar en donde dice "nombre-de-la-rama"
+## Instalación del proyecto
 
-3. Instala las dependencias:
+Clone el repositorio, cambie a la rama de arquitectura deseada y ejecute los comandos **desde la raíz del proyecto** (donde existe `artisan`):
 
-   ```bash
-   composer install
-   npm install
-   npm run dev
-   ```
+```bash
+git clone https://github.com/Erickpe8/arquitecturas-crud-autores-libros.git
+```
 
-4. Crea y configura tu archivo `.env`:
+```bash
+composer install
+```
 
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+```bash
+npm install
+npm run dev
+```
 
-5. Ejecuta las migraciones:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-   ```bash
-   php artisan migrate
-   ```
+```bash
+php artisan migrate --seed
+```
 
----
-## 🤖Tecnologias usadas
+```bash
+php artisan serve
+```
 
-A continuación se detallan las principales tecnologías empleadas en el desarrollo del sistema:
+## Seeders y datos de prueba
 
-- **PHP 8.1**: Lenguaje de programación principal para el backend.
-- **Laravel 10**: Framework de PHP utilizado para estructurar la aplicación y facilitar el desarrollo con patrones como MVC, hexagonal y Clean Architecture.
-- **MySQL**: Sistema de gestión de bases de datos relacional usado para el almacenamiento persistente de la información.
-- **Composer**: Herramienta de gestión de dependencias para PHP.
-- **Blade**: Motor de plantillas de Laravel utilizado para el frontend.
-- **HTML5 y CSS3**: Lenguajes base para la estructura y estilo del sitio.
-- **Git**: Sistema de control de versiones utilizado para el manejo del código fuente.
-- **GitHub**: Plataforma para alojar el repositorio del proyecto y gestionar la colaboración.
-- **Laragon**: Entorno de desarrollo local utilizado para correr la aplicación de forma eficiente.
----
-## 📚 ¿Por qué comparar arquitecturas?
+En las ramas con código, los seeders (`AuthorSeeder`, `GeneroSeeder`, `BookSeeder`) cargan **autores reconocibles**, el catálogo de **géneros** y **aproximadamente un centenar de libros** con **ISBN** y relaciones válidas hacia autores, pensados para ejercitar listados paginados, búsquedas y vistas de detalle.
 
-Comparar arquitecturas con un mismo caso de uso permite entender cómo varía la estructura del código con cada enfoque arquitectónico, visualizar la separación de responsabilidades, evaluar la escalabilidad y mantenibilidad de cada arquitectura, y analizar la claridad en el flujo de datos y la lógica de negocio.
+## Comparación con MVC tradicional
 
+La **línea base MVC** del mismo dominio está en la rama **`mvc`**: controladores y modelos **Eloquent** sin obligatoriedad de capas adicionales. Las demás ramas introducen **abstracciones y límites de módulo** sobre ese mismo comportamiento observable; **`main`** no contiene implementación y solo orienta la comparación entre ramas.
 
----
+## Objetivo educativo
 
-## Muchas gracias por llegar hasta aqui 
-Si estan interesados en conocer un poco más a fondo este proyecto o saber como realizar el proceso de instalación no duden en contactarme, lo pueden hacer por mis redes sociales las cuales aparecen en mi perfir de GitHub o via correo electronico ericksperezc@gmail.com
+El proyecto busca **comparar arquitecturas** sobre un caso de uso único, **enseñar organización de código** en Laravel, **mostrar separación de responsabilidades** y **analizar ventajas y desventajas** de cada patrón en un entorno controlado y reproducible.
 
-- 🎥 [YouTube](https://www.youtube.com/@ErickPerez_8)
-- 📸 [Instagram](https://www.instagram.com/erickperez_8/)
+## Autor
 
-¡Gracias por visitar mi perfil! 💻✨
+- **Nombre:** Erick Pérez
+- **GitHub:** https://github.com/Erickpe8
+- **Correo electrónico:** ericksperezc@gmail.com
