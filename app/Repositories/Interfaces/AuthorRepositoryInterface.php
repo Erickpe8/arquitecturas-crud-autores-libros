@@ -7,6 +7,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface AuthorRepositoryInterface
 {
+    public function countAll(): int;
+
     public function paginateWithSearch(?string $search): LengthAwarePaginator;
 
     public function create(array $data): Autor;

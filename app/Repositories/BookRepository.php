@@ -13,6 +13,22 @@ use Illuminate\Support\Facades\Storage;
 
 class BookRepository implements BookRepositoryInterface
 {
+    public function countAll(): int
+    {
+        return Libro::count();
+    }
+
+    public function mostRegisteredGenreName(): ?string
+    {
+        return Libro::query()
+            ->select('genero')
+            ->whereNotNull('genero')
+            ->where('genero', '!=', '')
+            ->groupBy('genero')
+            ->orderByRaw('COUNT(*) DESC')
+            ->value('genero');
+    }
+
     public function paginateWithFilters(?string $search, ?string $genre): LengthAwarePaginator
     {
         return Libro::with('autor')

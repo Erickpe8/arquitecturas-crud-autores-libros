@@ -8,6 +8,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AuthorRepository implements AuthorRepositoryInterface
 {
+    public function countAll(): int
+    {
+        return Autor::count();
+    }
+
     public function paginateWithSearch(?string $search): LengthAwarePaginator
     {
         return Autor::withCount('libros')

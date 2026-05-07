@@ -9,6 +9,10 @@ use Illuminate\Support\Collection;
 
 interface BookRepositoryInterface
 {
+    public function countAll(): int;
+
+    public function mostRegisteredGenreName(): ?string;
+
     public function paginateWithFilters(?string $search, ?string $genre): LengthAwarePaginator;
 
     public function allGenres(): Collection;
