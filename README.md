@@ -1,43 +1,88 @@
 # Biblioteca Laravel — Clean Architecture
 
-## Descripción general
+## Descripción del proyecto
 
-Este proyecto es una aplicación web de biblioteca construida con **Laravel 13** que permite gestionar autores y libros mediante operaciones CRUD, búsquedas y vistas construidas con **Blade** y **TailwindCSS**. El código está organizado siguiendo **Clean Architecture**, de modo que el dominio y los casos de uso no dependen del framework ni de Eloquent.
+Es una aplicación web desarrollada en **Laravel** que permite gestionar **autores** y **libros** mediante operaciones CRUD. La web muestra un panel de control con información agregada.
 
-El repositorio tiene **varias ramas**, cada una con la misma funcionalidad base pero con una organización de backend distinta; esta documentación corresponde a la rama **`clean-architecture`**. El propósito es facilitar el **estudio comparativo** de patrones arquitectónicos sobre un mismo dominio funcional.
+Esta variante sigue **Clean Architecture**: el **dominio** (`Entities`) y los **casos de uso** (`UseCases`) no dependen de Laravel ni de Eloquent; solo conocen **interfaces** (`Interfaces`) y **DTOs**. La persistencia, el almacenamiento de portadas y la paginación del framework viven en **`Infrastructure`** e implementan esos contratos. Los controladores son **adaptadores de entrada**: validan, construyen DTOs y ejecutan casos de uso.
 
-## Arquitectura implementada
+El repositorio incluye **otras ramas** con la misma funcionalidad y distinta organización de backend; esta documentación corresponde a la rama **`clean-architecture`**.
 
-**Clean Architecture** organiza el software en capas concéntricas: el dominio y las reglas de aplicación van en el centro y solo conocen **abstracciones** (interfaces); los detalles de infraestructura (persistencia con Eloquent, almacenamiento de ficheros, paginación del framework) viven en la periferia e implementan esos contratos.
+---
 
-El objetivo es **invertir dependencias**: Laravel actúa como motor HTTP y proveedor de drivers, mientras que entidades, DTOs y casos de uso permanecen **desacoplados** del framework. Las ventajas principales son mayor **testabilidad**, **mantenibilidad** y posibilidad de sustituir adaptadores sin reescribir el núcleo.
+## Arquitectura
 
-Respecto al **MVC tradicional**, los controladores dejan de contener consultas y persistencia directa: delegan en **casos de uso** que solo hablan con **interfaces de repositorio** y **almacenamiento**.
+**Capas (regla de dependencia hacia adentro):**
 
-## Estructura del proyecto
+- **`Entities`:** objetos de dominio (`Author`, `Book`, `AuthorSummary`, `BookCover`) sin imports de framework.
+- **`DTOs`:** transferencia entre HTTP y casos de uso (`AuthorWriteDto`, `BookWriteDto`, `BookIndexReadDto`, `DashboardStatsDto`, `PageResult`).
+- **`Interfaces`:** puertos (`AuthorRepositoryInterface`, `BookRepositoryInterface`, `CoverStorageInterface`).
+- **`UseCases`:** orquestación por agregado (`Authors`, `Books`, `Dashboard`).
+- **`Infrastructure`:** adaptadores Eloquent (`EloquentAuthorRepository`, `EloquentBookRepository`), disco (`LaravelCoverStorage`), utilidades (`EloquentDate`, `PaginatorPresenter`).
+- **`Http/Controllers`:** Laravel valida y despacha al caso de uso correspondiente.
 
-Árbol simplificado y real de las carpetas relevantes en esta rama:
+---
 
-```text
+## Árbol del proyecto
+
+```
 app/
 ├── DTOs/
+│   ├── AuthorWriteDto.php
+│   ├── BookIndexReadDto.php
+│   ├── BookWriteDto.php
+│   ├── DashboardStatsDto.php
 │   └── Pagination/
+│       └── PageResult.php
 ├── Entities/
+│   ├── Author.php
+│   ├── AuthorSummary.php
+│   ├── Book.php
+│   └── BookCover.php
 ├── Http/
 │   └── Controllers/
+│       ├── AutorController.php
+│       ├── LibroController.php
+│       └── Controller.php
 ├── Infrastructure/
 │   ├── Framework/
+│   │   └── PaginatorPresenter.php
 │   ├── Persistence/
+│   │   ├── EloquentAuthorRepository.php
+│   │   ├── EloquentBookRepository.php
+│   │   └── EloquentDate.php
 │   └── Storage/
+│       └── LaravelCoverStorage.php
 ├── Interfaces/
 │   ├── Repositories/
+│   │   ├── AuthorRepositoryInterface.php
+│   │   └── BookRepositoryInterface.php
 │   └── Storage/
+│       └── CoverStorageInterface.php
 ├── Models/
+│   ├── Autor.php
+│   ├── Genero.php
+│   ├── Libro.php
+│   └── User.php
 ├── Providers/
+│   └── AppServiceProvider.php
 └── UseCases/
     ├── Authors/
+    │   ├── CreateAuthorUseCase.php
+    │   ├── DeleteAuthorUseCase.php
+    │   ├── GetAuthorForEditUseCase.php
+    │   ├── ListAuthorsUseCase.php
+    │   ├── ShowAuthorUseCase.php
+    │   └── UpdateAuthorUseCase.php
     ├── Books/
+    │   ├── CreateBookUseCase.php
+    │   ├── DeleteBookUseCase.php
+    │   ├── GetBookFormOptionsUseCase.php
+    │   ├── ListBooksUseCase.php
+    │   ├── ShowBookUseCase.php
+    │   └── UpdateBookUseCase.php
     └── Dashboard/
+        └── GetDashboardStatsUseCase.php
 bootstrap/
 config/
 database/
@@ -50,111 +95,118 @@ resources/
 ├── js/
 └── views/
 routes/
+├── console.php
+└── web.php
 tests/
-composer.json
-package.json
-vite.config.js
 ```
 
-## Explicación de carpetas y responsabilidades
+---
 
-- **`app/Entities`**: Entidades de dominio puras (`Author`, `Book`, `AuthorSummary`) y reglas presentacionales independientes del framework (`BookCover`). No importan Laravel.
+## Carpetas principales
 
-- **`app/DTOs`**: Objetos de transferencia entre capas (`AuthorWriteDto`, `BookWriteDto`, `BookIndexReadDto`, `DashboardStatsDto`, `PageResult`) para no acoplar casos de uso a arrays arbitrarios del HTTP.
+| Carpeta | Función |
+|---------|---------|
+| `app/Entities` | Dominio puro |
+| `app/DTOs` | Contratos de datos entre capas |
+| `app/Interfaces` | Puertos (repositorios, almacenamiento) |
+| `app/UseCases` | Casos de uso por contexto |
+| `app/Infrastructure` | Adaptadores concretos (Eloquent, ficheros, paginación) |
+| `app/Http/Controllers` | Adaptadores HTTP |
+| `app/Models` | Eloquent usado desde infraestructura / framework |
+| `app/Providers` | Bindings interfaz → implementación |
+| `resources/views` | Vistas Blade |
+| `routes` | Rutas web |
+| `database/migrations` | Esquema |
+| `database/seeders` | Datos de ejemplo |
 
-- **`app/Interfaces`**: Contratos (**puertos**) que el dominio/aplicación necesitan: `AuthorRepositoryInterface`, `BookRepositoryInterface`, `CoverStorageInterface`. Las capas internas dependen solo de estas abstracciones.
+---
 
-- **`app/UseCases`**: Casos de uso por agregado (`Authors`, `Books`, `Dashboard`). Orquestan la lógica de aplicación invocando repositorios y tipos de dominio, sin usar facades ni Eloquent directamente.
+## Flujo de una petición típica
 
-- **`app/Infrastructure`**: **Adaptadores** concretos: repositorios Eloquent (`EloquentAuthorRepository`, `EloquentBookRepository`), almacenamiento de portadas con Laravel (`LaravelCoverStorage`), utilidades como `EloquentDate`, y `PaginatorPresenter` para adaptar la paginación del dominio al `LengthAwarePaginator` de Laravel.
+1. La petición llega al controlador o a la closure del dashboard en `routes/web.php`.
+2. Se valida en la capa HTTP y se arman DTOs o identificadores.
+3. Se ejecuta el **caso de uso**, que solo usa interfaces de repositorio y almacenamiento.
+4. Los adaptadores de infraestructura consultan o modifican datos con Eloquent y mapean a entidades.
+5. Resultados y paginación se adaptan si hace falta (`PaginatorPresenter`) y se envían a Blade o redirección.
 
-- **`app/Http/Controllers`**: Adaptadores de entrada HTTP: validan la petición, construyen DTOs, ejecutan casos de uso y devuelven vistas o redirecciones.
+---
 
-- **`app/Models`**: Modelos Eloquent usados **solo en infraestructura** y donde el framework los requiere (por ejemplo resolución de rutas); la lectura/escritura de negocio pasa por repositorios.
+## Funcionalidades
 
-- **`app/Providers`**: Registro de enlaces interfaz → implementación (`AppServiceProvider`).
+- **Panel de control:** totales y género más frecuente (`GetDashboardStatsUseCase`).
+- **CRUD de autores:** listado con búsqueda, alta, edición, detalle con libros, eliminación.
+- **CRUD de libros:** filtros, portada opcional vía `CoverStorageInterface`, edición y borrado con limpieza de fichero.
+- **Relaciones:** autor–libros persistidas con claves foráneas; géneros para formularios.
 
-- **`database/`**, **`resources/views/`**, **`routes/`**: Migraciones, seeders, vistas Blade y definición de rutas web.
+---
 
-El flujo entre capas respeta la **regla de dependencia**: de afuera hacia adentro solo se conocen interfaces y tipos de dominio; la infraestructura implementa los contratos definidos en `Interfaces`.
+## Tecnologías
 
-## Flujo de funcionamiento
+| Área | Tecnología |
+|------|------------|
+| Framework | Laravel |
+| Lenguaje | PHP |
+| Base de datos | MySQL (compatible con SQLite para desarrollo) |
+| Frontend | Blade, Vite, Tailwind CSS |
+| Empaquetado | npm |
+| Servidor local | `php artisan serve` |
 
-1. **Entrada**: Una petición HTTP llega a Laravel y se enruta al controlador correspondiente (`AutorController` o `LibroController`), o a la closure del dashboard en `routes/web.php`.
+---
 
-2. **Procesamiento en el adaptador**: El controlador valida datos con el sistema de validación de Laravel y construye **DTOs** o identificadores numéricos necesarios para el caso de uso.
+## Instalación
 
-3. **Flujo interno**: El controlador invoca un **caso de uso** (`ListAuthorsUseCase`, `CreateBookUseCase`, etc.). El caso de uso ejecuta la operación usando únicamente **interfaces** de repositorio o almacenamiento.
+### Requisitos
 
-4. **Acceso a datos**: Los **repositorios de infraestructura** consultan o modifican la base de datos mediante **Eloquent** y mapean filas a **entidades** de dominio. La subida de portadas se canaliza por `CoverStorageInterface` implementado con el disco público de Laravel.
+- PHP ≥ 8.2 con extensiones habituales de Laravel  
+- Composer  
+- Node.js y npm  
+- MySQL (o SQLite para pruebas rápidas)
 
-5. **Respuesta final**: Los resultados (entidades, `PageResult`, etc.) se adaptan cuando hace falta (por ejemplo con `PaginatorPresenter`) y se pasan a **Blade** para renderizar HTML, o se redirige con mensaje flash.
-
-## Funcionalidades actuales
-
-- CRUD de autores (listado con búsqueda por nombre, alta, edición, detalle con libros asociados, eliminación).
-- CRUD de libros (listado con búsqueda por título y filtro por género, alta con portada opcional, edición, detalle con autor, eliminación con borrado de portada en disco cuando aplica).
-- Relación autor–libros reflejada en vistas y datos persistidos con claves foráneas.
-- Dashboard de inicio con totales de autores y libros y género más frecuente entre los libros registrados.
-- Tabla de géneros precargada por seeders para selects del formulario de libros.
-
-## Tecnologías utilizadas
-
-- Laravel 13
-- PHP
-- MySQL
-- Blade
-- TailwindCSS
-- Eloquent ORM
-- Composer
-- Vite
-- Git
-- GitHub
-
-## Instalación del proyecto
-
-```bash
-git clone https://github.com/Erickpe8/arquitecturas-crud-autores-libros.git
-```
+### Pasos
 
 ```bash
 composer install
-```
-
-```bash
-npm install
-npm run dev
-```
-
-```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-```bash
-php artisan migrate --seed
-```
+Configura la base de datos en `.env` (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, etc.).
 
 ```bash
+php artisan migrate
+npm install
+npm run build
 php artisan serve
 ```
 
-## Seeders y datos de prueba
+Abre `http://127.0.0.1:8000` en el navegador.
 
-Los seeders (`AuthorSeeder`, `GeneroSeeder`, `BookSeeder`) cargan autores reconocibles, un conjunto amplio de libros (del orden de un centenar de registros) con ISBN generados, géneros alineados a la tabla `generos`, y relaciones válidas entre libros y autores para probar listados, filtros y vistas de detalle.
+---
 
-## Comparación con MVC tradicional
+## Seeders
 
-En MVC clásico sobre Laravel, el controlador suele concentrar validación, consultas encadenadas con Eloquent y respuesta. En esta rama, esa lógica se **reparte**: los casos de uso encapsulan la intención de cada operación, los **repositorios** encapsulan el acceso a datos tras interfaces y las **entidades** representan el dominio sin Framework. La dependencia hacia adentro reduce el acoplamiento y localiza los cambios de persistencia en `Infrastructure`, al precio de más archivos y ceremonia inicial.
+Para cargar datos de ejemplo:
+
+```bash
+php artisan db:seed
+```
+
+Semillas típicas (`AuthorSeeder`, `GeneroSeeder`, `BookSeeder`): autores, géneros y muchos libros con ISBN y relaciones válidas para probar listados, filtros y detalle.
+
+---
+
+## Comparación con MVC «plano»
+
+En MVC clásico el controlador suele mezclar validación, Eloquent y respuesta. Aquí la **intención** vive en **casos de uso**, el **acceso a datos** tras interfaces y el **dominio** en entidades sin framework: mayor claridad y testabilidad, a cambio de más archivos y ceremonia.
+
+---
 
 ## Objetivo educativo
 
-El proyecto permite **comparar** cómo se organiza el mismo CRUD bajo distintas arquitecturas en ramas paralelas, **enseñar** principios de separación de responsabilidades y dependencias, **analizar** ventajas y costes de cada estilo, y **evaluar** qué tan útil es cada enfoque en aplicaciones Laravel de tamaño modesto.
+Comparar el mismo CRUD bajo **Clean Architecture** frente a otras ramas del repositorio, visualizar **inversión de dependencias** en Laravel y valorar coste vs beneficio en proyectos de tamaño modesto.
 
-## Muchas gracias por llegar hasta aqui 
-Si estan interesados en conocer un poco más a fondo este proyecto o saber como realizar el proceso de instalación no duden en contactarme, lo pueden hacer por mis redes sociales las cuales aparecen en mi perfir de GitHub o via correo electronico ericksperezc@gmail.com
+---
 
-- 🎥 [YouTube](https://www.youtube.com/@ErickPerez_8)
-- 📸 [Instagram](https://www.instagram.com/erickperez_8/)
+Muchas gracias por revisar este proyecto.
 
-¡Gracias por visitar mi perfil! 💻✨
+Si tienes comentarios o sugerencias contactame en **ericksperezc@gmail.com**, seguime en [**YouTube**](https://www.youtube.com/@ericksperezc) y [**Instagram**](https://www.instagram.com/ericksperezc/).
