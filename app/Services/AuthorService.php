@@ -7,6 +7,11 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AuthorService
 {
+    public function countAll(): int
+    {
+        return Autor::count();
+    }
+
     public function index(?string $search): LengthAwarePaginator
     {
         return Autor::withCount('libros')

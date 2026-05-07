@@ -11,6 +11,22 @@ use Illuminate\Validation\Rule;
 
 class BookService
 {
+    public function countAll(): int
+    {
+        return Libro::count();
+    }
+
+    public function mostRegisteredGenreName(): ?string
+    {
+        return Libro::query()
+            ->whereNotNull('genero')
+            ->where('genero', '!=', '')
+            ->selectRaw('genero, COUNT(*) as total')
+            ->groupBy('genero')
+            ->orderByDesc('total')
+            ->value('genero');
+    }
+
     public function index(?string $search, ?string $genero): array
     {
         $libros = Libro::with('autor')

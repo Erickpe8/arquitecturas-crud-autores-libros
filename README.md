@@ -1,58 +1,161 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Biblioteca Laravel — Service Layer
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Descripción del proyecto
 
-## About Laravel
+Es una aplicación web desarrollada en **Laravel** que permite gestionar **autores** y **libros** mediante operaciones CRUD. La web muestra un panel de control con información agregada.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Esta variante introduce una **capa de servicios** (`AuthorService`, `BookService`): los controladores delegan la **lógica de aplicación** (consultas, validaciones de reglas, ficheros de portada, etc.) en servicios; los modelos Eloquent siguen representando el dominio persistente.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Arquitectura
 
-## Learning Laravel
+- **HTTP:** rutas → `AutorController` y `LibroController`.
+- **Servicios:** orquestan casos de uso (listados con filtros, CRUD, subida de portadas, reglas de validación reutilizables).
+- **Modelos:** `Autor`, `Libro`, `Genero` y relaciones Eloquent.
+- **Vistas:** Blade con layout principal (`layouts/app`).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+El dashboard (`/`) obtiene totales y el género más registrado llamando a los mismos servicios, manteniendo la lectura agregada fuera del controlador de recursos.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Árbol del proyecto
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+app/
+├── Http/
+│   └── Controllers/
+│       ├── AutorController.php
+│       ├── LibroController.php
+│       └── Controller.php
+├── Models/
+│   ├── Autor.php
+│   ├── Genero.php
+│   ├── Libro.php
+│   └── User.php
+├── Providers/
+│   └── AppServiceProvider.php
+└── Services/
+    ├── AuthorService.php
+    └── BookService.php
+bootstrap/
+config/
+database/
+├── factories/
+├── migrations/
+└── seeders/
+public/
+resources/
+├── css/
+├── js/
+└── views/
+routes/
+├── console.php
+└── web.php
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## Carpetas principales
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Carpeta | Función |
+|---------|---------|
+| `app/Http/Controllers` | Entrada HTTP fina; delega en servicios |
+| `app/Services` | Reglas, consultas y operaciones de negocio de aplicación |
+| `app/Models` | Modelos Eloquent y relaciones |
+| `resources/views` | Vistas Blade (layouts, autores, libros, dashboard) |
+| `routes` | Rutas web (`/` y recursos `autores`, `libros`) |
+| `database/migrations` | Esquema de tablas |
+| `database/seeders` | Datos de ejemplo |
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Flujo de una petición típica
 
-## Security Vulnerabilities
+1. Una ruta resuelve a un método del controlador.
+2. Laravel **inyecta** `AuthorService` o `BookService` en el constructor del controlador.
+3. El controlador valida con `$service->storeRules()` / `updateRules()` y llama a `store`, `update`, etc.
+4. El servicio trabaja con modelos Eloquent (y almacenamiento para portadas).
+5. Se devuelve vista o redirección con mensaje flash.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## Funcionalidades
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Panel de control:** totales de autores y libros; género más registrado en catálogo.
+- **CRUD de autores:** búsqueda, alta, detalle con libros, edición y eliminación.
+- **CRUD de libros:** filtros por título y género, alta con portada opcional, edición y borrado con limpieza de fichero.
+- **Relaciones:** cada libro pertenece a un autor; géneros enlazados a la tabla `generos`.
+
+---
+
+## Tecnologías
+
+| Área | Tecnología |
+|------|------------|
+| Framework | Laravel |
+| Lenguaje | PHP |
+| Base de datos | MySQL (compatible con SQLite para desarrollo) |
+| Frontend | Blade, Vite, Tailwind CSS |
+| Empaquetado | npm |
+| Servidor local | `php artisan serve` |
+
+---
+
+## Instalación
+
+### Requisitos
+
+- PHP ≥ 8.2 con extensiones habituales de Laravel  
+- Composer  
+- Node.js y npm  
+- MySQL (o SQLite para pruebas rápidas)
+
+### Pasos
+
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Configura la base de datos en `.env` (`DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, etc.).
+
+```bash
+php artisan migrate
+npm install
+npm run build
+php artisan serve
+```
+
+Abre `http://127.0.0.1:8000` en el navegador.
+
+---
+
+## Seeders
+
+Para cargar datos de ejemplo:
+
+```bash
+php artisan db:seed
+```
+
+Semillas típicas: autor(es), género(s) y libro(s) para probar el CRUD y el panel sin crear registros a mano.
+
+---
+
+## Comparación con MVC «plano»
+
+En MVC sin capa de servicio, la lógica suele concentrarse en los **controladores**. Aquí, los controladores se mantienen **delgados** y la lógica repetible o voluminosa vive en **servicios**, lo que facilita pruebas y reutilización sin cambiar rutas ni vistas.
+
+---
+
+## Objetivo educativo
+
+Esta rama muestra cómo ordenar un CRUD Laravel con una **capa de aplicación explícita** (servicios) entre HTTP y Eloquent, manteniendo el mismo producto funcional que el MVC clásico.
+
+---
+
+Muchas gracias por revisar este proyecto.
+
+Si tienes comentarios o sugerencias contactame en **ericksperezc@gmail.com**, seguime en [**YouTube**](https://www.youtube.com/@ericksperezc) y [**Instagram**](https://www.instagram.com/ericksperezc/).
