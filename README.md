@@ -1,78 +1,55 @@
-# Biblioteca Laravel — MVC
+# Arquitecturas CRUD — Autores y Libros | Modelo – Vista – Controlador (MVC)
+
+![GitHub Repo stars](https://img.shields.io/github/stars/Erickpe8/arquitecturas-crud-autores-libros?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Erickpe8/arquitecturas-crud-autores-libros?style=social)
 
 ## Descripción general
 
-Este proyecto es una aplicación web de biblioteca construida con **Laravel 13** que permite gestionar autores y libros mediante operaciones CRUD, búsquedas y vistas construidas con **Blade** y **TailwindCSS**. En esta rama el backend sigue el enfoque **MVC tradicional de Laravel**: la lógica de consultas y persistencia reside principalmente en los controladores junto con los modelos **Eloquent**.
+Esta rama implementa el **CRUD de autores y libros** en **Laravel 13** siguiendo el **patrón Modelo – Vista – Controlador** tal como suele aplicarse en proyectos Laravel: rutas enlazan a **controladores**, la persistencia y las consultas se expresan con **modelos Eloquent**, y la interfaz se renderiza con **Blade**. Sirve como **referencia base** para comparar el mismo dominio funcional con el resto de ramas arquitectónicas del repositorio.
 
-El repositorio tiene **varias ramas**, cada una con la misma funcionalidad base pero con una organización de backend distinta; esta documentación corresponde a la rama **`mvc`**. El propósito es facilitar el **estudio comparativo** de patrones arquitectónicos sobre un mismo dominio funcional.
+El objetivo educativo es mostrar la organización **mínima impuesta por el framework** y el volumen de responsabilidades que típicamente permanece en controladores y modelos cuando no se introducen capas adicionales explícitas.
 
 ## Arquitectura implementada
 
-**MVC (Model–View–Controller)** en Laravel separa la presentación (**Blade**), la coordinación HTTP (**controladores**) y el acceso a datos (**modelos Eloquent**). Las rutas delegan en los controladores, que validan la entrada y ejecutan operaciones sobre los modelos.
+**MVC** separa la **entrada HTTP** (controlador), la **representación persistente** (modelos asociados a tablas) y la **presentación** (vistas). Aquí los controladores `AutorController` y `LibroController` coordinan validación, uso de Eloquent y respuesta; el modelo encapsula relaciones (`Autor`–`Libro`) y reglas de acceso a datos a nivel ORM.
 
-El objetivo es mantener una curva de aprendizaje **baja** y una estructura **directa**, típica de aplicaciones CRUD pequeñas. Las ventajas principales son simplicidad, menos archivos intermediarios y convenciones muy conocidas del ecosistema Laravel.
-
-Respecto a un diseño más “en capas”, aquí los controladores suelen concentrar **consultas encadenadas y persistencia** junto con la respuesta HTTP.
+Ventajas en este contexto: **simplicidad**, curva de aprendizaje baja y alineación directa con la documentación oficial de Laravel. Respecto a otras ramas del mismo repositorio, esta variante concentra más responsabilidades en **controladores y modelos** y **no impone** repositorios, servicios de aplicación ni casos de uso nominales.
 
 ## Estructura del proyecto
 
-Árbol simplificado y real de las carpetas relevantes en esta rama:
+Árbol **real** de `app/` en esta rama:
 
-```text
+```bash
 app/
 ├── Http/
 │   └── Controllers/
 ├── Models/
 └── Providers/
-bootstrap/
-config/
-database/
-├── factories/
-├── migrations/
-└── seeders/
-public/
-resources/
-├── css/
-├── js/
-└── views/
-routes/
-tests/
-composer.json
-package.json
-vite.config.js
 ```
+
+El resto del esqueleto Laravel (`routes/`, `resources/views/`, `database/`, `config/`, etc.) respeta la convención estándar del framework.
 
 ## Explicación de carpetas y responsabilidades
 
-- **`app/Http/Controllers`**: Punto de entrada HTTP tras las rutas. Valida datos (`Request`), ejecuta consultas y comandos sobre los modelos Eloquent y devuelve vistas o redirecciones.
+- **`Http/Controllers`**: Adaptadores HTTP para **autores** y **libros**; validan entrada, invocan Eloquent sobre los modelos y devuelven vistas o redirecciones. La ruta `/` usa una **closure** en `routes/web.php` para el panel inicial con agregados sobre los modelos.
+- **`Models`**: Modelos **Autor**, **Libro**, **Genero** y **User**; definición de **fillable**, relaciones y lógica de presentación ligera donde existe (por ejemplo URL derivada de portada en **Libro**).
+- **`Providers`**: Registro de servicios del framework (`AppServiceProvider`); sin bindings adicionales obligatorios para esta variante MVC.
 
-- **`app/Models`**: Modelos activos (`Autor`, `Libro`, `Genero`, etc.) con `$fillable`, relaciones (`hasMany`, `belongsTo`) y en algunos casos **accessors** (por ejemplo URL de portada).
-
-- **`app/Providers`**: Arranque y configuración de servicios Laravel (`AppServiceProvider` sin registros arquitectónicos adicionales en esta rama).
-
-- **`database/`**, **`resources/views/`**, **`routes/`**: Migraciones, seeders, vistas Blade y rutas web (recursos REST para `autores` y `libros`).
-
-La separación es esencialmente la **convención estándar** de Laravel: controladores delgados o voluminosos según la operación, sin capas obligatorias de servicios o repositorios.
+La separación entre capas sigue el **flujo request → controller → model/view** habitual en Laravel.
 
 ## Flujo de funcionamiento
 
-1. **Entrada**: Laravel recibe la petición y enruta a `AutorController` o `LibroController`, o ejecuta la closure del dashboard en `routes/web.php`.
-
-2. **Procesamiento**: El controlador valida la entrada cuando corresponde y ejecuta directamente consultas Eloquent (`Autor::…`, `Libro::…`, `Genero::…`) sobre los modelos.
-
-3. **Flujo interno**: Las relaciones de modelos cargan datos relacionados (`with`, `load`) donde la vista lo necesita.
-
-4. **Acceso a datos**: Todo el acceso pasa por **Eloquent** contra las tablas definidas en migraciones.
-
-5. **Respuesta final**: Se renderiza una vista Blade con los datos compactados o se redirige con mensajes flash.
+1. **Entrada:** `routes/web.php` enlaza la URL a un método de controlador o a la closure del **dashboard**.
+2. **Procesamiento:** el controlador valida la petición y ejecuta consultas o comandos sobre los **modelos Eloquent**.
+3. **Capas:** no hay capa intermedia obligatoria entre HTTP y ORM; la coordinación es responsabilidad del controlador.
+4. **Acceso a datos:** lectura y escritura en base de datos mediante Eloquent y migraciones existentes.
+5. **Respuesta final:** datos compactados hacia vistas Blade (`resources/views`) o **redirect** con mensajes de sesión.
 
 ## Funcionalidades actuales
 
-- CRUD de autores (listado con búsqueda por nombre, alta, edición, detalle con libros asociados, eliminación).
-- CRUD de libros (listado con búsqueda por título y filtro por género, alta con portada opcional, edición, detalle con autor, eliminación con borrado de portada en disco cuando aplica).
-- Relación autor–libros reflejada en vistas y datos persistidos con claves foráneas.
-- Dashboard de inicio con totales de autores y libros y género más frecuente entre los libros registrados.
-- Tabla de géneros precargada por seeders para selects del formulario de libros.
+- **CRUD de autores**: listado con **búsqueda por nombre**, creación, edición, detalle con libros relacionados y eliminación.
+- **CRUD de libros**: listado con **búsqueda** y **filtro por género**, alta con **portada opcional**, edición, detalle y eliminación.
+- **Relaciones**: cada libro pertenece a un autor; géneros almacenados y utilizados en formularios y filtros.
 
 ## Tecnologías utilizadas
 
@@ -115,22 +92,22 @@ php artisan migrate --seed
 php artisan serve
 ```
 
+Tras el clon, ejecute `git checkout mvc` antes de los pasos en la raíz del proyecto.
+
 ## Seeders y datos de prueba
 
-Los seeders (`AuthorSeeder`, `GeneroSeeder`, `BookSeeder`) cargan autores reconocibles, un conjunto amplio de libros (del orden de un centenar de registros) con ISBN generados, géneros alineados a la tabla `generos`, y relaciones válidas entre libros y autores para probar listados, filtros y vistas de detalle.
+Los seeders (`AuthorSeeder`, `GeneroSeeder`, `BookSeeder`) cargan **autores reconocibles**, **géneros** y **aproximadamente un centenar de libros** con **ISBN** y relaciones coherentes para probar búsquedas, paginación y vistas de detalle sin crear datos manualmente.
 
 ## Comparación con MVC tradicional
 
-Esta rama **es** la línea base MVC clásica sobre Laravel: no hay repositorios ni casos de uso intermedios. Las responsabilidades están reunidas en controladores y modelos; cualquier otra rama del repositorio introduce **separación adicional** con distintos trade-offs (más archivos y límites de capas más claros).
+Esta rama **es** la referencia **MVC tradicional** sobre Laravel: responsabilidades de aplicación y acceso a datos pueden **mezclarse** entre controlador y modelo según el método. **No** se han separado por contrato interfaces de repositorio ni servicios de dominio; la mantenibilidad depende de disciplina en el equipo. Para mayor **desacoplamiento** o **escalabilidad** modular, las demás ramas muestran patrones que externalizan consultas, reglas o casos de uso.
 
 ## Objetivo educativo
 
-El proyecto permite **comparar** cómo se organiza el mismo CRUD bajo distintas arquitecturas en ramas paralelas, **enseñar** principios de separación de responsabilidades y dependencias, **analizar** ventajas y costes de cada estilo, y **evaluar** qué tan útil es cada enfoque en aplicaciones Laravel de tamaño modesto.
+Comparar este baseline contra otras ramas del mismo repositorio para **visualizar** cómo crece el número de artefactos cuando se exige **mayor separación de responsabilidades** y **menor acoplamiento** entre HTTP y persistencia.
 
-## Muchas gracias por llegar hasta aqui 
-Si estan interesados en conocer un poco más a fondo este proyecto o saber como realizar el proceso de instalación no duden en contactarme, lo pueden hacer por mis redes sociales las cuales aparecen en mi perfir de GitHub o via correo electronico ericksperezc@gmail.com
+## Autor
 
-- 🎥 [YouTube](https://www.youtube.com/@ErickPerez_8)
-- 📸 [Instagram](https://www.instagram.com/erickperez_8/)
-
-¡Gracias por visitar mi perfil! 💻✨
+- **Nombre:** Erick Pérez
+- **GitHub:** https://github.com/Erickpe8
+- **Correo electrónico:** ericksperezc@gmail.com
