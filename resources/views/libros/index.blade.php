@@ -38,9 +38,9 @@
                 <p class="mt-1 text-sm text-slate-600">{{ $libro->autor->nombre }}</p>
                 <p class="mt-2 text-sm text-slate-500">{{ $libro->genero ?? 'Sin género' }}</p>
                 <div class="mt-4 flex gap-2 text-sm">
-                    <a href="{{ route('libros.show', $libro) }}" class="rounded-base border border-blue-600 bg-blue-50 px-3 py-2 text-xs font-medium leading-5 text-blue-700 transition hover:bg-blue-600 hover:text-white">Ver</a>
-                    <a href="{{ route('libros.edit', $libro) }}" class="rounded-base border border-amber-600 bg-amber-50 px-3 py-2 text-xs font-medium leading-5 text-amber-700 transition hover:bg-amber-600 hover:text-white">Editar</a>
-                    <form action="{{ route('libros.destroy', $libro) }}" method="POST" onsubmit="return confirm('¿Eliminar libro?')">
+                    <a href="{{ route('libros.show', ['libro' => $libro->id]) }}" class="rounded-base border border-blue-600 bg-blue-50 px-3 py-2 text-xs font-medium leading-5 text-blue-700 transition hover:bg-blue-600 hover:text-white">Ver</a>
+                    <a href="{{ route('libros.edit', ['libro' => $libro->id]) }}" class="rounded-base border border-amber-600 bg-amber-50 px-3 py-2 text-xs font-medium leading-5 text-amber-700 transition hover:bg-amber-600 hover:text-white">Editar</a>
+                    <form action="{{ route('libros.destroy', ['libro' => $libro->id]) }}" method="POST" onsubmit="return confirm('¿Eliminar libro?')">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="rounded-base border border-rose-600 bg-rose-50 px-3 py-2 text-xs font-medium leading-5 text-rose-700 transition hover:bg-rose-600 hover:text-white">Eliminar</button>

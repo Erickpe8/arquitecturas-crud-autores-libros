@@ -2,20 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Autor;
+use App\Application\Authors\CreateAuthorUseCase;
+use App\Application\Authors\DeleteAuthorUseCase;
+use App\Application\Authors\GetAuthorWithBooksUseCase;
+use App\Application\Authors\ListAuthorsUseCase;
+use App\Application\Authors\UpdateAuthorUseCase;
+use App\Infrastructure\Laravel\PaginatorFactory;
 use Illuminate\Http\Request;
 
 class AutorController extends Controller
 {
+    public function __construct(
+        private readonly ListAuthorsUseCase $listAuthors,
+        private readonly CreateAuthorUseCase $createAuthor,
+        private readonly GetAuthorWithBooksUseCase $getAuthorWithBooks,
+        private readonly UpdateAuthorUseCase $updateAuthor,
+        private readonly DeleteAuthorUseCase $deleteAuthor,
+    ) {}
+
     public function index()
     {
         $search = request('search');
-
-        $autores = Autor::withCount('libros')
-            ->when($search, fn ($query) => $query->where('nombre', 'like', "%{$search}%"))
-            ->orderBy('nombre')
-            ->paginate(24)
-            ->withQueryString();
+        $result = $this->listAuthors->execute($search);
+        $autores = PaginatorFactory::fromResult($result);
 
         return view('autores.index', compact('autores', 'search'));
     }
@@ -34,24 +43,28 @@ class AutorController extends Controller
             'biografia' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        Autor::create($data);
+        $this->createAuthor->execute($data);
 
         return redirect()->route('autores.index')->with('success', 'Autor creado correctamente.');
     }
 
-    public function show(Autor $autor)
+    public function show(int $autor)
     {
-        $autor->load(['libros' => fn ($query) => $query->latest('fecha_publicacion')]);
+        $entity = $this->getAuthorWithBooks->execute($autor);
+        abort_if($entity === null, 404);
 
-        return view('autores.show', compact('autor'));
+        return view('autores.show', ['autor' => $entity]);
     }
 
-    public function edit(Autor $autor)
+    public function edit(int $autor)
     {
-        return view('autores.edit', compact('autor'));
+        $entity = $this->getAuthorWithBooks->execute($autor);
+        abort_if($entity === null, 404);
+
+        return view('autores.edit', ['autor' => $entity]);
     }
 
-    public function update(Request $request, Autor $autor)
+    public function update(Request $request, int $autor)
     {
         $data = $request->validate([
             'nombre' => ['required', 'string', 'max:120'],
@@ -60,14 +73,14 @@ class AutorController extends Controller
             'biografia' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        $autor->update($data);
+        $entity = $this->updateAuthor->execute($autor, $data);
 
-        return redirect()->route('autores.show', $autor)->with('success', 'Autor actualizado correctamente.');
+        return redirect()->route('autores.show', ['autor' => $entity->id])->with('success', 'Autor actualizado correctamente.');
     }
 
-    public function destroy(Autor $autor)
+    public function destroy(int $autor)
     {
-        $autor->delete();
+        $this->deleteAuthor->execute($autor);
 
         return redirect()->route('autores.index')->with('success', 'Autor eliminado correctamente.');
     }

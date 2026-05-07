@@ -17,6 +17,13 @@ class Autor extends Model
         'biografia',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'fecha_nacimiento' => 'date',
+        ];
+    }
+
     public function libros(): HasMany
     {
         return $this->hasMany(Libro::class);
