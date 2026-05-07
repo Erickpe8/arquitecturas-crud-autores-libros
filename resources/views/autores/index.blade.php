@@ -16,8 +16,8 @@
     <form method="GET" class="mb-6 rounded-xl bg-white p-4 shadow">
         <div class="flex gap-3">
             <input type="text" name="search" value="{{ $search }}" placeholder="Buscar autor por nombre..."
-                class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
-            <button class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">Buscar</button>
+                class="input-fixed w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+            <button type="submit" class="text-fg-brand bg-neutral-primary border border-brand hover:bg-brand hover:text-white focus:ring-4 focus:ring-brand-subtle font-medium leading-5 rounded-base text-xs px-3 py-2 focus:outline-none">Buscar</button>
         </div>
     </form>
 
@@ -37,14 +37,16 @@
                         <td class="px-4 py-3">{{ $autor->nombre }}</td>
                         <td class="px-4 py-3">{{ $autor->nacionalidad ?? 'N/A' }}</td>
                         <td class="px-4 py-3">{{ $autor->libros_count }}</td>
-                        <td class="px-4 py-3 text-right">
-                            <a href="{{ route('autores.show', $autor) }}" class="text-indigo-600 hover:underline">Ver</a>
-                            <a href="{{ route('autores.edit', $autor) }}" class="ml-3 text-slate-700 hover:underline">Editar</a>
-                            <form action="{{ route('autores.destroy', $autor) }}" method="POST" class="ml-3 inline" onsubmit="return confirm('¿Eliminar autor?')">
+                        <td class="px-4 py-3">
+                            <div class="flex justify-end gap-2">
+                                <a href="{{ route('autores.show', ['autor' => $autor->id]) }}" class="rounded-base border border-blue-600 bg-blue-50 px-3 py-2 text-xs font-medium leading-5 text-blue-700 transition hover:bg-blue-600 hover:text-white">Ver</a>
+                                <a href="{{ route('autores.edit', ['autor' => $autor->id]) }}" class="rounded-base border border-amber-600 bg-amber-50 px-3 py-2 text-xs font-medium leading-5 text-amber-700 transition hover:bg-amber-600 hover:text-white">Editar</a>
+                                <form action="{{ route('autores.destroy', ['autor' => $autor->id]) }}" method="POST" class="inline" onsubmit="return confirm('¿Eliminar autor?')">
                                 @csrf
                                 @method('DELETE')
-                                <button class="text-rose-600 hover:underline">Eliminar</button>
-                            </form>
+                                    <button type="submit" class="rounded-base border border-rose-600 bg-rose-50 px-3 py-2 text-xs font-medium leading-5 text-rose-700 transition hover:bg-rose-600 hover:text-white">Eliminar</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty

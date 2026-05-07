@@ -10,7 +10,7 @@
         @method('PUT')
         @include('libros.partials.form', ['libro' => $libro])
         <div class="mt-6">
-            <button class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">Actualizar</button>
+            <button type="submit" class="text-fg-brand bg-neutral-primary border border-brand hover:bg-brand hover:text-white focus:ring-4 focus:ring-brand-subtle font-medium leading-5 rounded-base text-xs px-3 py-2 focus:outline-none">Actualizar</button>
         </div>
     </form>
 @endsection

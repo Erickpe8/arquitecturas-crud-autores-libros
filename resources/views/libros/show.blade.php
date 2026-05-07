@@ -6,16 +6,12 @@
     <div class="grid gap-6 lg:grid-cols-3">
         <div class="rounded-xl bg-white p-4 shadow lg:col-span-1">
             <div class="h-72 overflow-hidden rounded-lg bg-slate-100">
-                @if ($libro->portada)
-                    <img src="{{ asset('storage/' . $libro->portada) }}" class="h-full w-full object-cover" alt="{{ $libro->titulo }}">
-                @else
-                    <div class="flex h-full items-center justify-center text-sm text-slate-500">Sin portada</div>
-                @endif
+                <img src="{{ $libro->portada_url }}" class="h-full w-full object-cover" alt="{{ $libro->titulo }}">
             </div>
         </div>
         <div class="rounded-xl bg-white p-6 shadow lg:col-span-2">
             <h1 class="text-3xl font-bold">{{ $libro->titulo }}</h1>
-            <p class="mt-1 text-slate-600">Autor: <a href="{{ route('autores.show', $libro->autor) }}" class="text-indigo-600 hover:underline">{{ $libro->autor->nombre }}</a></p>
+            <p class="mt-1 text-slate-600">Autor: <a href="{{ route('autores.show', ['autor' => $libro->autor->id]) }}" class="text-indigo-600 hover:underline">{{ $libro->autor->nombre }}</a></p>
 
             <div class="mt-4 grid gap-3 sm:grid-cols-2">
                 <p><span class="font-semibold">ISBN:</span> {{ $libro->isbn }}</p>
@@ -30,7 +26,7 @@
                 <form action="{{ route('libros.destroy', $libro) }}" method="POST" onsubmit="return confirm('¿Eliminar libro?')">
                     @csrf
                     @method('DELETE')
-                    <button class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-500">Eliminar</button>
+                    <button type="submit" class="text-fg-brand bg-neutral-primary border border-brand hover:bg-brand hover:text-white focus:ring-4 focus:ring-brand-subtle font-medium leading-5 rounded-base text-xs px-3 py-2 focus:outline-none">Eliminar</button>
                 </form>
             </div>
         </div>

@@ -16,15 +16,15 @@
     <form method="GET" class="mb-6 rounded-xl bg-white p-4 shadow">
         <div class="grid gap-3 md:grid-cols-3">
             <input type="text" name="search" value="{{ $search }}" placeholder="Buscar por título..."
-                class="rounded-lg border border-slate-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+                class="input-fixed rounded-lg border border-slate-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
             <select name="genero"
-                class="rounded-lg border border-slate-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+                class="input-fixed rounded-lg border border-slate-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
                 <option value="">Todos los géneros</option>
                 @foreach ($generos as $item)
                     <option value="{{ $item }}" @selected($genero === $item)>{{ $item }}</option>
                 @endforeach
             </select>
-            <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">Filtrar</button>
+            <button type="submit" class="text-fg-brand bg-neutral-primary border border-brand hover:bg-brand hover:text-white focus:ring-4 focus:ring-brand-subtle font-medium leading-5 rounded-base text-xs px-3 py-2 focus:outline-none">Filtrar</button>
         </div>
     </form>
 
@@ -32,22 +32,18 @@
         @forelse ($libros as $libro)
             <div class="rounded-xl bg-white p-4 shadow">
                 <div class="mb-3 h-44 overflow-hidden rounded-lg bg-slate-100">
-                    @if ($libro->portada)
-                        <img src="{{ asset('storage/' . $libro->portada) }}" class="h-full w-full object-cover" alt="{{ $libro->titulo }}">
-                    @else
-                        <div class="flex h-full items-center justify-center text-sm text-slate-500">Sin portada</div>
-                    @endif
+                    <img src="{{ $libro->portada_url }}" class="h-full w-full object-cover" alt="{{ $libro->titulo }}">
                 </div>
                 <h3 class="font-semibold">{{ $libro->titulo }}</h3>
                 <p class="mt-1 text-sm text-slate-600">{{ $libro->autor->nombre }}</p>
                 <p class="mt-2 text-sm text-slate-500">{{ $libro->genero ?? 'Sin género' }}</p>
-                <div class="mt-4 flex gap-3 text-sm">
-                    <a href="{{ route('libros.show', $libro) }}" class="text-indigo-600 hover:underline">Ver</a>
-                    <a href="{{ route('libros.edit', $libro) }}" class="text-slate-700 hover:underline">Editar</a>
+                <div class="mt-4 flex gap-2 text-sm">
+                    <a href="{{ route('libros.show', $libro) }}" class="rounded-base border border-blue-600 bg-blue-50 px-3 py-2 text-xs font-medium leading-5 text-blue-700 transition hover:bg-blue-600 hover:text-white">Ver</a>
+                    <a href="{{ route('libros.edit', $libro) }}" class="rounded-base border border-amber-600 bg-amber-50 px-3 py-2 text-xs font-medium leading-5 text-amber-700 transition hover:bg-amber-600 hover:text-white">Editar</a>
                     <form action="{{ route('libros.destroy', $libro) }}" method="POST" onsubmit="return confirm('¿Eliminar libro?')">
                         @csrf
                         @method('DELETE')
-                        <button class="text-rose-600 hover:underline">Eliminar</button>
+                        <button type="submit" class="rounded-base border border-rose-600 bg-rose-50 px-3 py-2 text-xs font-medium leading-5 text-rose-700 transition hover:bg-rose-600 hover:text-white">Eliminar</button>
                     </form>
                 </div>
             </div>

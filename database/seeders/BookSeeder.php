@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Autor;
 use App\Models\Libro;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class BookSeeder extends Seeder
 {
@@ -170,7 +169,7 @@ class BookSeeder extends Seeder
                 'fecha_publicacion' => $book['fecha_publicacion'],
                 'genero' => $book['genero'],
                 'isbn' => $this->generateIsbn($index + 1),
-                'portada' => 'https://via.placeholder.com/300x450.png?text=' . Str::of($book['titulo'])->replace(' ', '+'),
+                'portada' => null,
                 'autor_id' => $author->id,
                 'created_at' => now(),
                 'updated_at' => now(),

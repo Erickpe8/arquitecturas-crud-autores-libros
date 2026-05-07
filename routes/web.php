@@ -20,5 +20,7 @@ Route::get('/', function () {
     return view('dashboard', compact('totalAutores', 'totalLibros', 'generoMasRegistrado'));
 })->name('dashboard');
 
-Route::resource('autores', AutorController::class);
+Route::resource('autores', AutorController::class)->parameters([
+    'autores' => 'autor',
+]);
 Route::resource('libros', LibroController::class);

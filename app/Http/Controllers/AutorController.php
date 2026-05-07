@@ -14,7 +14,7 @@ class AutorController extends Controller
         $autores = Autor::withCount('libros')
             ->when($search, fn ($query) => $query->where('nombre', 'like', "%{$search}%"))
             ->orderBy('nombre')
-            ->paginate(8)
+            ->paginate(24)
             ->withQueryString();
 
         return view('autores.index', compact('autores', 'search'));
